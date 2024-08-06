@@ -81,6 +81,7 @@ fun BasicCard(task: String, done: Boolean /*, type: cardType*/) {
     }
 }
 
+// временная заглушка пока нет типа TaskDto
 private fun getPlackColor(/*type: cardType*/): Int {
     return R.color.purple_200
 }
