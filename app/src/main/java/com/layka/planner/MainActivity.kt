@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.layka.planner.myComposables.cards.BasicCard
 import com.layka.planner.myComposables.cards.BasicCardPreview
+import com.layka.planner.myComposables.cards.TaskList
 import com.layka.planner.ui.theme.PlannerTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,16 +22,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlannerTheme {
-                BasicCardPreview()
+                TaskList()
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
