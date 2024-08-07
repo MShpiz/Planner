@@ -10,4 +10,7 @@
 
     <color name="baby_blue">#DFF5FF</color>
     <color name="light_blue">#4EC6FF</color>
+
+    <color name="light_mint">#DFFFED</color>
+    <color name="mint">#41FF94</color>
 </resources>
