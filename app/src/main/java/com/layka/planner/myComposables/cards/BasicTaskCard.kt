@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
@@ -18,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -28,7 +28,11 @@ import androidx.compose.ui.unit.sp
 import com.layka.planner.R
 
 @Composable
-fun BasicCard(task: String, done: Boolean /*, type: cardType*/) {
+fun BasicCard(task: String,
+              done: Boolean,
+              backgroundColor:Color=colorResource(R.color.white),
+              tagColor: Color=colorResource(R.color.teal_200),
+              tagText: String?=null) {
     val isDone: MutableState<Boolean> =
         remember { mutableStateOf(done) }
     val isFullyShown: MutableState<Boolean> =
@@ -44,7 +48,7 @@ fun BasicCard(task: String, done: Boolean /*, type: cardType*/) {
             .clip(RoundedCornerShape(5.dp))
 
 
-            .background(colorResource(getBackgroundColor(/*type*/)))
+            .background(backgroundColor)
             .clickable {
                 isFullyShown.value = !isFullyShown.value
             }
@@ -68,20 +72,21 @@ fun BasicCard(task: String, done: Boolean /*, type: cardType*/) {
                 .weight(1F)
                 .padding(end = 10.dp)
             )
-        Text(
-            text = "type",
-            style = TextStyle(color=colorResource(R.color.white)),
-            modifier = Modifier
-                .clip(RoundedCornerShape(100.dp))
-                .background(colorResource(id = getPlackColor(/*type*/)))
-                .padding(start = 8.dp, end = 8.dp, bottom = 3.dp, top = 1.dp)
 
+        if (tagText != null) {
+            Text( // tag
+                text = tagText,
+                style = TextStyle(color=colorResource(R.color.white)),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(100.dp))
+                    .background(tagColor)
+                    .padding(start = 8.dp, end = 8.dp, bottom = 3.dp, top = 1.dp)
+            )
+        }
 
-        )
     }
 }
 
-// временная заглушка пока нет типа TaskDto
 private fun getPlackColor(/*type: cardType*/): Int {
     return R.color.purple_200
 }
