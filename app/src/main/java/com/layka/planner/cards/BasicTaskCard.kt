@@ -1,4 +1,4 @@
-package com.layka.planner.myComposables.cards
+package com.layka.planner.cards
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,11 +28,11 @@ import androidx.compose.ui.unit.sp
 import com.layka.planner.R
 
 @Composable
-fun BasicCard(task: String,
-              done: Boolean,
-              backgroundColor:Color=colorResource(R.color.white),
-              tagColor: Color=colorResource(R.color.teal_200),
-              tagText: String?=null) {
+fun BaseCard(task: String,
+             done: Boolean,
+             backgroundColor:Color,
+             tagColor: Color=colorResource(R.color.teal_200),
+             tagText: String?=null) {
     val isDone: MutableState<Boolean> =
         remember { mutableStateOf(done) }
     val isFullyShown: MutableState<Boolean> =
@@ -93,14 +93,4 @@ private fun getPlackColor(/*type: cardType*/): Int {
 
 private fun getBackgroundColor(/*type: cardType*/): Int {
     return R.color.white
-}
-
-@Composable
-@Preview
-fun BasicCardPreview() {
-    Column {
-        BasicCard(task = "TextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextText", done = false)
-        BasicCard(task = "Text", done = true)
-
-    }
 }

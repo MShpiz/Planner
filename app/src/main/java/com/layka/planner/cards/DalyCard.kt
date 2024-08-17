@@ -1,4 +1,4 @@
-package com.layka.planner.myComposables.cards
+package com.layka.planner.cards
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -9,7 +9,7 @@ import com.layka.planner.R
 
 @Composable
 fun DailyCard(task: String, done: Boolean) {
-    BasicCard(
+    BaseCard(
         task,
         done,
         backgroundColor = colorResource(R.color.baby_blue),

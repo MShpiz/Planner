@@ -1,4 +1,4 @@
-package com.layka.planner.myComposables.cards
+package com.layka.planner.cards
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
