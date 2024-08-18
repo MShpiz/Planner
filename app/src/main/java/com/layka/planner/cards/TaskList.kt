@@ -4,26 +4,57 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.layka.planner.data.TaskCategory
+import com.layka.planner.data.TaskItem
+import com.layka.planner.data.TaskType
 
 @Composable
-fun TaskList(tasks:List<TaskModel>) {
+fun TaskList(tasks:List<TaskItem>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
         item {
             tasks.forEach{
-                if (it is DailyTaskModel) {
-                    DailyCard(task = it.task, done = it.done)
+                when (it.taskType){
+                TaskType.DAILY ->
+                    DailyCard(task = it.taskText, done = it.isDone)
+                TaskType.WEEKLY ->
+                    WeeklyCard(task = it.taskText, done = it.isDone)
+                TaskType.DEFAULT -> {
+                    if (it.category == null) {
+                        PlainCard(task = it.taskText, done = it.isDone)
+                    } else {
+                        BaseCard(
+                            task = it.taskText,
+                            done = it.isDone,
+                            backgroundColor = it.category.backgroundColor,
+                            tagColor = it.category.badgeColor,
+                            tagText = it.category.categoryName
+                        )
+                    }
+                }
+
+
                 }
             }
         }
     }
 }
 
+
 @Preview
 @Composable
 fun TaskListPreview() {
-    TaskList()
+    val customCategory: TaskCategory = TaskCategory(1, "cat", Color.Gray, Color.Red)
+    val tasks = listOf<TaskItem>(
+        TaskItem(1, "Task1"),
+        TaskItem(2, taskText = "Task2", isDone = true),
+        TaskItem(3, taskText = "Daily task", taskType = TaskType.DAILY),
+        TaskItem(4, taskText = "Weekly task", taskType = TaskType.WEEKLY),
+        TaskItem(6, taskText = "Custom task", category = customCategory),
+    )
+    TaskList(tasks = tasks)
 }

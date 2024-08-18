@@ -71,8 +71,11 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
+
+    implementation(kotlin("stdlib-jdk8"))
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.dagger)
+    implementation(libs.dagger.compiler)
     ksp(libs.dagger.compiler)
 }
