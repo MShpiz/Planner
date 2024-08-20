@@ -8,7 +8,8 @@ import com.layka.planner.dao.TaskDao
 @Database(
     entities = [
         TaskDb::class,
-        CategoryDb::class
+        CategoryDb::class,
+        TaskCategoryCrossRef::class
     ],
     version = 1
 )

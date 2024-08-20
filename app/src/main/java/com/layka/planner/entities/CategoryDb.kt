@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName ="TaskCategories")
 class CategoryDb(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo("categoryId")
     val id: Long,
 

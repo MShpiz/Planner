@@ -3,6 +3,7 @@ package com.layka.planner.entities
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Junction
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.layka.planner.data.TaskType
@@ -26,12 +27,3 @@ class TaskDb (
     val categoryId: Long?
 )
 
-class CategoriesWithTasks(
-    @Embedded val category: CategoryDb,
-
-    @Relation(
-        parentColumn = "categoryId",
-        entityColumn = "categoryId"
-    )
-    val tasks: List<TaskDb>
-)
