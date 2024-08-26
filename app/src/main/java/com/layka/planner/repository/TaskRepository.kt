@@ -1,13 +1,13 @@
 package com.layka.planner.repository
 
-import androidx.compose.ui.graphics.Color
+import com.layka.planner.dao.TaskDao
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
-import com.layka.planner.entities.TaskDatabase
+import com.layka.planner.entities.TaskDb
 import javax.inject.Inject
 
-class TaskRepository @Inject constructor(private val database: TaskDatabase) {
+class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
 
     suspend fun getAllTasks(): MutableList<TaskItem> {
         val tasks = database.taskDao().getAll()
@@ -20,11 +20,11 @@ class TaskRepository @Inject constructor(private val database: TaskDatabase) {
                 cat = TaskCategory(
                     foundCategory.id,
                     foundCategory.name,
-                    Color( foundCategory.backgroundColor),
-                    Color(foundCategory.tagColor)
+                    foundCategory.backgroundColor,
+                    foundCategory.tagColor
                 )
             }
-            result.add(TaskItem(t.id, t.text, t.isDone, TaskType.DEFAULT, cat))
+            result.add(TaskItem(t.text, t.isDone, TaskType.DEFAULT, cat))
         }
         return result
     }

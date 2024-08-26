@@ -1,21 +1,26 @@
 package com.layka.planner.entities
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.layka.planner.entities.typeConverters.ColorConverters
 
+
+@TypeConverters(ColorConverters::class)
 @Entity(tableName ="TaskCategories")
-class CategoryDb(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo("categoryId")
-    val id: Long,
+data class CategoryDb(
+    @PrimaryKey
+    @ColumnInfo("id")
+    var id: Int,
 
-    @ColumnInfo("categoryName")
-    val name: String,
+    @ColumnInfo("name")
+    var name: String,
 
-    @ColumnInfo("categoryBackgroundColor")
-    val backgroundColor: ULong,
+    @ColumnInfo("bgColor")
+    var backgroundColor: Color,
 
-    @ColumnInfo("categoryTagColor")
-    val tagColor: ULong
+    @ColumnInfo("tagColor")
+    var tagColor: Color
 )

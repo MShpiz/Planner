@@ -4,10 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.TypeConverters
 import androidx.room.Update
 import androidx.room.Upsert
 import com.layka.planner.entities.CategoryDb
-import com.layka.planner.entities.TaskDb
 
 @Dao
 interface TaskCategoryDao {
@@ -18,10 +18,10 @@ interface TaskCategoryDao {
     @Upsert
     fun upsertCategory(categoryDb: CategoryDb)
 
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM TaskCategories")
     suspend fun getAll(): List<CategoryDb>
 
     @Transaction
-    @Query("SELECT * FROM tasks WHERE :categoryId = categoryId")
+    @Query("SELECT * FROM TaskCategories WHERE id = :categoryId")
     suspend fun getCategoryById(categoryId: Long): CategoryDb
 }

@@ -22,10 +22,10 @@ interface TaskDao {
     suspend fun getAll(): List<TaskDb>
 
     @Transaction
-    @Query("SELECT * FROM tasks WHERE :taskId = taskId")
-    suspend fun getTaskById(taskId: Long): TaskDb
+    @Query("SELECT * FROM tasks WHERE taskId = :taskId ")
+    suspend fun getTaskById(taskId: Int): TaskDb
 
-    @Transaction
-    @Query("SELECT * FROM tasks WHERE :categoryId = categoryId")
-    suspend fun getTasksById(categoryId: Long): CategoriesWithTasks
+//    @Transaction
+//    @Query("SELECT * FROM tasks WHERE categoryId = :categoryId")
+//    suspend fun getTasksByCategory(categoryId: Int): CategoriesWithTasks
 }

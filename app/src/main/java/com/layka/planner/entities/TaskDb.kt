@@ -1,29 +1,30 @@
 package com.layka.planner.entities
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Junction
 import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.TypeConverters
 import com.layka.planner.data.TaskType
+import com.layka.planner.entities.typeConverters.TaskTypeConverters
 
+@TypeConverters(TaskTypeConverters::class)
 @Entity(tableName = "tasks")
-class TaskDb (
-    @PrimaryKey
-    @ColumnInfo(name="taskId")
-    val id:Long,
-
+data class TaskDb (
     @ColumnInfo(name="taskText")
-    val text: String,
+    var text: String,
 
     @ColumnInfo(name="isDone")
-    val isDone: Boolean,
+    var isDone: Boolean,
 
     @ColumnInfo(name="taskType")
-    val type: TaskType,
+    var type: TaskType,
 
     @ColumnInfo(name="categoryId")
-    val categoryId: Long?
+    var categoryId: Int?,
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name="taskId")
+    var id:Long = 0
 )
+
 

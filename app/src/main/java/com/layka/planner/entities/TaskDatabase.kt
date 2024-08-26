@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.layka.planner.dao.TaskCategoryDao
 import com.layka.planner.dao.TaskDao
+import com.layka.planner.repository.DatabaseAPI
 
 @Database(
     entities = [
@@ -13,8 +14,8 @@ import com.layka.planner.dao.TaskDao
     ],
     version = 1
 )
-abstract class TaskDatabase: RoomDatabase() {
-    abstract fun taskDao(): TaskDao
+abstract class TaskDatabase: RoomDatabase(), DatabaseAPI {
+    abstract override fun taskDao(): TaskDao
 
-    abstract fun taskCategoryDao(): TaskCategoryDao
+    abstract override fun taskCategoryDao(): TaskCategoryDao
 }
