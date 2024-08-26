@@ -4,19 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.layka.planner.DI.PlannerComponent
 import com.layka.planner.cards.TaskList
-import com.layka.planner.repository.TaskRepository
 import com.layka.planner.ui.theme.PlannerTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class MainActivity() : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
         setContent {
             PlannerTheme {
-                // TaskList(tasks = TaskRepository().getAllTasks())
+                TaskList()
             }
         }
     }

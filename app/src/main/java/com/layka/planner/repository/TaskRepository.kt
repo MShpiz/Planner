@@ -53,6 +53,10 @@ class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
         TODO("updateTask")
     }
 
+    suspend fun addTask(taskItem: TaskItem) {
+        database.taskDao().insertTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType,taskItem.category?.categoryId ?: null))
+    }
+
 
     // пока работа с бекапами будет тут
 //    suspend fun updateOuterRepository() {
