@@ -1,6 +1,5 @@
 package com.layka.planner.repository
 
-import com.layka.planner.dao.TaskDao
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
@@ -24,17 +23,23 @@ class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
                     foundCategory.tagColor
                 )
             }
-            result.add(TaskItem(t.text, t.isDone, TaskType.DEFAULT, cat))
+            result.add(TaskItem(t.text, t.isDone, t.type, cat))
         }
         return result
     }
 
-    suspend fun getTaskDetails(id: Long) {
-        TODO("getTaskDetails")
+    suspend fun getTaskDetails(id: Int): TaskItem? {
+        val task:TaskDb
+        try {
+            task = database.taskDao().getTaskById(id)
+        } catch (e: Exception) {
+            return null
+        }
+        return TaskItem(taskText = task.text, isDone = task.isDone, taskType = task.type)
     }
 
-    suspend fun saveNewTask() {
-        TODO("saveNewTask")
+    suspend fun saveNewTask(value: TaskItem) {
+        database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId))
     }
 
     suspend fun deleteTask() {

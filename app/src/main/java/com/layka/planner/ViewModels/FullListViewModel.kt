@@ -17,7 +17,7 @@ class FullListViewModel @Inject constructor (private val repository: TaskReposit
         getTasks()
     }
 
-    private fun getTasks() {
+    fun getTasks() {
        viewModelScope.launch {
            tasks.value = repository.getAllTasks()
        }

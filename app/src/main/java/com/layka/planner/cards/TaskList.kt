@@ -11,7 +11,7 @@ import com.layka.planner.data.TaskType
 
 @Composable
 fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel()) {
-
+    taskViewModel.getTasks()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
