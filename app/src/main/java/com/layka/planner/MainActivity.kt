@@ -12,8 +12,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavArgument
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,6 +44,21 @@ class MainActivity() : ComponentActivity() {
                     composable(
                         "create_note") {
                         TaskEditScreen(navController)
+                    }
+
+                    composable(
+                        "edit_task/{id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                nullable = false
+                            }
+                        )
+                    ) {
+                        val id = remember {
+                            it.arguments?.getLong("id")
+                        }
+                        TaskEditScreen(navController, id = id)
                     }
                 }
 

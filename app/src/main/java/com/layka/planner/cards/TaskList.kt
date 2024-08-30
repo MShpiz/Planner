@@ -1,48 +1,50 @@
 package com.layka.planner.cards
 
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.layka.planner.ViewModels.FullListViewModel
+import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 
 @Composable
-fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel()) {
+fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController: NavController) {
     taskViewModel.getTasks()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        item {
-            taskViewModel.tasks.value.forEach{
-                when (it.taskType){
-                    TaskType.DAILY ->
-                        DailyCard(task = it.taskText, done = it.isDone)
-                    TaskType.WEEKLY ->
-                        WeeklyCard(task = it.taskText, done = it.isDone)
-                    TaskType.DEFAULT -> {
-                        if (it.category == null) {
-                            PlainCard(task = it.taskText, done = it.isDone)
-                        } else {
-                            BaseCard(
-                                task = it.taskText,
-                                done = it.isDone,
-                                backgroundColor = it.category.backgroundColor,
-                                tagColor = it.category.badgeColor,
-                                tagText = it.category.categoryName
-                            )
+        itemsIndexed(taskViewModel.tasks.value) { index: Int, it: TaskItem ->
+                Box(
+                    modifier = Modifier.clickable {
+                        Log.v("ClickTrack", "clicked box of item ${it.id}")
+                        navController.navigate("edit_task/${it.id}")
+                    }
+                ) {
+                    when (it.taskType) {
+                        TaskType.DAILY ->
+                            DailyCard(it)
+
+                        TaskType.WEEKLY ->
+                            WeeklyCard(it)
+
+                        TaskType.DEFAULT -> {
+                            PlainCard(it)
                         }
                     }
-
-
                 }
             }
         }
     }
-}
 
 
 @Preview

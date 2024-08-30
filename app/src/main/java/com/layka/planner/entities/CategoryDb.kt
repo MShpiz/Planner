@@ -13,7 +13,7 @@ import com.layka.planner.entities.typeConverters.ColorConverters
 data class CategoryDb(
     @PrimaryKey
     @ColumnInfo("id")
-    var id: Int,
+    var id: Long,
 
     @ColumnInfo("name")
     var name: String,

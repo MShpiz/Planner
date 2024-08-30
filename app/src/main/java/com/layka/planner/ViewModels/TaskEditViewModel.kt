@@ -1,6 +1,5 @@
 package com.layka.planner.ViewModels
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.layka.planner.data.TaskItem
@@ -11,23 +10,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(private val repository: TaskRepository): ViewModel() {
-    val task = mutableStateOf(TaskItem(""))
 
-    fun getTaskInfo(id: Int){
+    //val task = mutableStateOf(TaskItem(null, ""))
+
+    fun getTaskInfo(id: Long?, updateData: (TaskItem) -> Unit) {
         viewModelScope.launch {
-            val res = repository.getTaskDetails(id)
-            if (res != null) {
-                task.value = res
-            }
+            var res = TaskItem(null, "")
+            if (id != null)
+                 res = repository.getTaskDetails(id) ?: res
+            updateData(res)
         }
     }
 
-    fun saveTask(): Boolean {
-        if (task.value.taskText.isEmpty()) {
+//    suspend fun getTaskInfo(id: Long?): TaskItem {
+//        if (id == null)
+//            return TaskItem(null, "")
+//        return repository.getTaskDetails(id) ?: TaskItem(null, "")
+//    }
+
+    fun saveTask(task: TaskItem): Boolean {
+        if (task.taskText.isBlank()) {
             return false
         }
         viewModelScope.launch {
-            repository.saveNewTask(task.value)
+            repository.saveTask(task)
         }
         return true
     }

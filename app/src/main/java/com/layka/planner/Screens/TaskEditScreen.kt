@@ -1,7 +1,7 @@
 package com.layka.planner.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -19,25 +19,48 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.layka.planner.ViewModels.TaskEditViewModel
+import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskEditScreen(navController: NavController, id: Int? = null,  taskViewModel: TaskEditViewModel = hiltViewModel()) {
-        if (id != null) {
-        taskViewModel.getTaskInfo(id)
+fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewModel: TaskEditViewModel = hiltViewModel()) {
+
+    val context = LocalContext.current // контекст для тоста
+
+    val showToast = fun (text: String) {
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
+
+    val gotData = remember {
+        mutableStateOf(false)
+    }
+    val taskText = remember { mutableStateOf("") }
+    val selectedType = remember { mutableStateOf(TaskType.DEFAULT) }
+    val updateData = fun (t: TaskItem){ // обновление данных полсле получения из бд
+        taskText.value = t.taskText
+        selectedType.value = t.taskType
+    }
+
+    if (!gotData.value) { // получение данных из бд должно произойти только 1 раз
+           taskViewModel.getTaskInfo(id, updateData)
+        gotData.value = true
+    }
+
 
     val typeMenuExpanded = remember {
         mutableStateOf(false)
     }
-    val taskText = remember { mutableStateOf(taskViewModel.task.value.taskText) }
-    val selectedType = remember { mutableStateOf(taskViewModel.task.value.taskType) }
+
+
     val taskTypes = TaskType.entries.toMutableList()
     val icon = if (typeMenuExpanded.value)
         Icons.Filled.KeyboardArrowUp
@@ -46,13 +69,15 @@ fun TaskEditScreen(navController: NavController, id: Int? = null,  taskViewModel
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            TextField(
+            TextField( // текст задачи
                 value = taskText.value,
-                onValueChange = { taskText.value = it },
+                onValueChange = {
+                    taskText.value = it
+                },
                 placeholder = { "Task" }
             )
 
-            ExposedDropdownMenuBox(
+            ExposedDropdownMenuBox( // меню выбора типа задачи
                 expanded = typeMenuExpanded.value,
                 onExpandedChange = { typeMenuExpanded.value = !typeMenuExpanded.value }
             ) {
@@ -74,6 +99,7 @@ fun TaskEditScreen(navController: NavController, id: Int? = null,  taskViewModel
                         DropdownMenuItem(
                             onClick = {
                                 selectedType.value = ttype
+                                typeMenuExpanded.value = false
                             },
                             text = { Text(text = ttype.name) })
                     }
@@ -81,10 +107,18 @@ fun TaskEditScreen(navController: NavController, id: Int? = null,  taskViewModel
 
             }
             Button(onClick = {
-                taskViewModel.task.value.taskText = taskText.value
-                taskViewModel.task.value.taskType = selectedType.value
-                taskViewModel.saveTask()
-                navController.popBackStack()
+                val result = taskViewModel.saveTask(
+                    TaskItem(
+                        id,
+                        taskText = taskText.value,
+                        taskType = selectedType.value
+                    )
+                )
+                if (result) {
+                    navController.popBackStack()
+                } else {
+                    showToast("task is empty")
+                }
             }) {
                 Text(text = "Save")
             }

@@ -6,7 +6,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
-import com.layka.planner.entities.CategoriesWithTasks
 import com.layka.planner.entities.TaskDb
 
 @Dao
@@ -23,7 +22,7 @@ interface TaskDao {
 
     @Transaction
     @Query("SELECT * FROM tasks WHERE taskId = :taskId ")
-    suspend fun getTaskById(taskId: Int): TaskDb
+    suspend fun getTaskById(taskId: Long): TaskDb
 
 //    @Transaction
 //    @Query("SELECT * FROM tasks WHERE categoryId = :categoryId")

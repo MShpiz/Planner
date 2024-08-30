@@ -20,7 +20,7 @@ data class TaskDb (
     var type: TaskType,
 
     @ColumnInfo(name="categoryId")
-    var categoryId: Int?,
+    var categoryId: Long?,
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="taskId")

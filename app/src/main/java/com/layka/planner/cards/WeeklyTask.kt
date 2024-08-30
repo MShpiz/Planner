@@ -6,12 +6,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.layka.planner.R
+import com.layka.planner.data.TaskItem
 
 @Composable
-fun WeeklyCard(task: String, done: Boolean) {
+fun WeeklyCard(task: TaskItem) {
     BaseCard(
-        task,
-        done,
+        task.taskText,
+        task.isDone,
         backgroundColor = colorResource(R.color.light_mint),
         tagText = stringResource(id = R.string.weekly_tag_text),
         tagColor = colorResource(R.color.mint)
@@ -23,9 +24,8 @@ fun WeeklyCard(task: String, done: Boolean) {
 fun WeeklyCardPreview() {
     Column {
         WeeklyCard(
-            task = "TextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextTextText",
-            done = false
+            TaskItem(null, "AAAAAAAAAA")
         )
-        WeeklyCard(task = "Text", done = true)
+        WeeklyCard(TaskItem(null, "Text", isDone = true))
     }
 }

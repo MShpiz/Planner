@@ -25,7 +25,7 @@ fun MainScreen(navController: NavController) {
     )
     { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
-            TaskList()
+            TaskList(navController = navController)
         }
     }
 }

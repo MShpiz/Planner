@@ -1,8 +1,8 @@
 package com.layka.planner.cards
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,7 +22,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.layka.planner.R
@@ -49,15 +48,17 @@ fun BaseCard(task: String,
 
 
             .background(backgroundColor)
-            .clickable {
-                isFullyShown.value = !isFullyShown.value
-            }
+//            .clickable {
+//                Log.v("ClickTrack", "clicked the task")
+//                isFullyShown.value = !isFullyShown.value
+//            }
             .padding(start = 3.dp, end = 10.dp)
             .fillMaxWidth()
     )
     {
         Checkbox(checked = isDone.value, onCheckedChange = {
             newDone -> isDone.value = newDone
+            Log.v("ClickTrack", "clicked the checkBox")
         } )
         Text(
             text = task,
@@ -85,12 +86,4 @@ fun BaseCard(task: String,
         }
 
     }
-}
-
-private fun getPlackColor(/*type: cardType*/): Int {
-    return R.color.purple_200
-}
-
-private fun getBackgroundColor(/*type: cardType*/): Int {
-    return R.color.white
 }

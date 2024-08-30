@@ -1,8 +1,9 @@
 package com.layka.planner.data
 
 data class TaskItem(
+    val id: Long?,
     var taskText: String,
-    val isDone: Boolean = false,
+    var isDone: Boolean = false,
     var taskType: TaskType = TaskType.DEFAULT,
-    val category: TaskCategory? = null
+    val category: TaskCategory? = null,
 )

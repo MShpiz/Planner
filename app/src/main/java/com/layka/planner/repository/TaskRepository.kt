@@ -23,23 +23,28 @@ class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
                     foundCategory.tagColor
                 )
             }
-            result.add(TaskItem(t.text, t.isDone, t.type, cat))
+            result.add(TaskItem(t.id, t.text, t.isDone, t.type, cat))
         }
         return result
     }
 
-    suspend fun getTaskDetails(id: Int): TaskItem? {
+    suspend fun getTaskDetails(id: Long): TaskItem? {
         val task:TaskDb
         try {
             task = database.taskDao().getTaskById(id)
         } catch (e: Exception) {
             return null
         }
-        return TaskItem(taskText = task.text, isDone = task.isDone, taskType = task.type)
+        return TaskItem(id = task.id,taskText = task.text, isDone = task.isDone, taskType = task.type)
     }
 
-    suspend fun saveNewTask(value: TaskItem) {
-        database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId))
+    suspend fun saveTask(value: TaskItem) {
+        if (value.id == null || (getTaskDetails(value.id) == null)) {
+            database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId))
+        } else {
+            updateTask(value)
+        }
+
     }
 
     suspend fun deleteTask() {
@@ -54,12 +59,8 @@ class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
         TODO("getAllTasksByCategory")
     }
 
-    suspend fun updateTask() {
-        TODO("updateTask")
-    }
-
-    suspend fun addTask(taskItem: TaskItem) {
-        database.taskDao().insertTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType,taskItem.category?.categoryId ?: null))
+    private suspend fun updateTask(taskItem: TaskItem) {
+        database.taskDao().updateTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType, taskItem.category?.categoryId, taskItem.id!!))
     }
 
 
