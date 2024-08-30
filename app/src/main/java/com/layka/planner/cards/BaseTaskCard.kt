@@ -2,7 +2,6 @@ package com.layka.planner.cards
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,13 +24,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.layka.planner.R
+import com.layka.planner.ViewModels.FullListViewModel
 
 @Composable
-fun BaseCard(task: String,
-             done: Boolean,
-             backgroundColor:Color,
-             tagColor: Color=colorResource(R.color.teal_200),
-             tagText: String?=null) {
+fun BaseCard(
+    task: String,
+    done: Boolean,
+    backgroundColor: Color,
+    tagColor: Color = colorResource(R.color.teal_200),
+    tagText: String? = null,
+    updateChecked: ()->Unit
+) {
     val isDone: MutableState<Boolean> =
         remember { mutableStateOf(done) }
     val isFullyShown: MutableState<Boolean> =
@@ -58,6 +61,7 @@ fun BaseCard(task: String,
     {
         Checkbox(checked = isDone.value, onCheckedChange = {
             newDone -> isDone.value = newDone
+            updateChecked()
             Log.v("ClickTrack", "clicked the checkBox")
         } )
         Text(

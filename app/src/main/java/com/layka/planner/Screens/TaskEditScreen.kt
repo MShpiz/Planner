@@ -73,8 +73,7 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                 value = taskText.value,
                 onValueChange = {
                     taskText.value = it
-                },
-                placeholder = { "Task" }
+                }
             )
 
             ExposedDropdownMenuBox( // меню выбора типа задачи
