@@ -37,4 +37,14 @@ class TaskEditViewModel @Inject constructor(private val repository: TaskReposito
         }
         return true
     }
+
+    fun deleteTask(id: Long?): Boolean {
+        if (id == null) {
+            return false
+        }
+        viewModelScope.launch {
+            repository.deleteTask(id)
+        }
+        return true
+    }
 }

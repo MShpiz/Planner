@@ -2,6 +2,7 @@ package com.layka.planner.Screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -105,21 +106,35 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                 }
 
             }
-            Button(onClick = {
-                val result = taskViewModel.saveTask(
-                    TaskItem(
-                        id,
-                        taskText = taskText.value,
-                        taskType = selectedType.value
+            Row {
+                Button(onClick = { // кнопка сохранения задачи
+                    val result = taskViewModel.saveTask(
+                        TaskItem(
+                            id,
+                            taskText = taskText.value,
+                            taskType = selectedType.value
+                        )
                     )
-                )
-                if (result) {
-                    navController.popBackStack()
-                } else {
-                    showToast("task is empty")
+                    if (result) {
+                        navController.popBackStack()
+                    } else {
+                        showToast("task is empty")
+                    }
+                }) {
+                    Text(text = "Save")
                 }
-            }) {
-                Text(text = "Save")
+
+                if (id != null) { // если это существующая заадача добавляем кнопку удаления
+                    Button(onClick = {
+                        if (taskViewModel.deleteTask(id)) {
+                            navController.popBackStack()
+                        } else {
+                            showToast("no such task")
+                        }
+                    }) {
+                        Text(text = "Delete")
+                    }
+                }
             }
         }
     }

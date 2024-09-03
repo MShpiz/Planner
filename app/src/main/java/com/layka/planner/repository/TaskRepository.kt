@@ -1,5 +1,6 @@
 package com.layka.planner.repository
 
+import android.util.Log
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
@@ -47,8 +48,13 @@ class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
 
     }
 
-    suspend fun deleteTask() {
-        TODO("deleteTask")
+    suspend fun deleteTask(id: Long) {
+        val task = database.taskDao().getTaskById(id)
+
+        if (task != null){
+            database.taskDao().deleteTask(task)
+        }
+
     }
 
     suspend fun getAllTasksByType(taskType: TaskType) {

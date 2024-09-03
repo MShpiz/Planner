@@ -1,6 +1,7 @@
 package com.layka.planner.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -17,6 +18,10 @@ interface TaskDao {
     @Upsert
     fun upsertTask(taskDb: TaskDb)
 
+    @Delete
+    fun deleteTask(taskDb: TaskDb)
+
+    @Transaction
     @Query("SELECT * FROM tasks")
     suspend fun getAll(): List<TaskDb>
 
