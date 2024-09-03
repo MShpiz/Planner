@@ -1,35 +1,57 @@
 package com.layka.planner.cards
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.layka.planner.R
 import com.layka.planner.ViewModels.FullListViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 
 @Composable
 fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController: NavController) {
+    val painter = painterResource(id = R.drawable.plus)
     taskViewModel.getTasks()
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        itemsIndexed(taskViewModel.tasks.value) { index: Int, it: TaskItem ->
+    
+    if (taskViewModel.tasks.value.isEmpty()) {
+        Column( horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()){
+            Image(painter, "no tasks")
+            Text(text = stringResource(id = R.string.no_tasks))
+        }
+        
+    } else {
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+
+            itemsIndexed(taskViewModel.tasks.value) { index: Int, it: TaskItem ->
                 Box(
                     modifier = Modifier.clickable {
                         Log.v("ClickTrack", "clicked box of item ${it.id}")
                         navController.navigate("edit_task/${it.id}")
                     }
                 ) {
-                    val updateChecked = fun () {
+                    val updateChecked = fun() {
                         it.isDone = !it.isDone
                         taskViewModel.updateTask(it)
                     }
@@ -48,18 +70,6 @@ fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController:
             }
         }
     }
-
-
-@Preview
-@Composable
-fun TaskListPreview() {
-//    val customCategory: TaskCategory = TaskCategory(1, "cat", Color.Gray, Color.Red)
-//    val tasks = listOf<TaskItem>(
-//        TaskItem(1, "Task1"),
-//        TaskItem(2, taskText = "Task2", isDone = true),
-//        TaskItem(3, taskText = "Daily task", taskType = TaskType.DAILY),
-//        TaskItem(4, taskText = "Weekly task", taskType = TaskType.WEEKLY),
-//        TaskItem(6, taskText = "Custom task", category = customCategory),
-//    )
-//    TaskList(tasks = tasks)
 }
+
+

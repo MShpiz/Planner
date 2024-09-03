@@ -3,4 +3,5 @@
     <string name="daily_tag_text">Daily</string>
     <string name="weekly_tag_text">Weekly</string>
     <string name="title_activity_task_edit">TaskEditActivity</string>
+    <string name="no_tasks">Create a task to fill the space</string>
 </resources>
