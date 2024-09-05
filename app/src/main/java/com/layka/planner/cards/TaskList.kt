@@ -15,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.layka.planner.R
@@ -28,7 +26,6 @@ import com.layka.planner.data.TaskType
 fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController: NavController) {
     val painter = painterResource(id = R.drawable.plus)
     taskViewModel.getTasks()
-    
     if (taskViewModel.tasks.value.isEmpty()) {
         Column( horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,

@@ -5,9 +5,15 @@ import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 import com.layka.planner.entities.TaskDb
+import com.layka.planner.network.BackupApi
+import com.layka.planner.network.TaskRequest
+import retrofit2.HttpException
 import javax.inject.Inject
 
-class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
+class TaskRepository @Inject constructor(
+    private val database: DatabaseAPI,
+    private val outerRepo: BackupApi
+) {
 
     suspend fun getAllTasks(): MutableList<TaskItem> {
         val tasks = database.taskDao().getAll()
@@ -70,12 +76,49 @@ class TaskRepository @Inject constructor(private val database: DatabaseAPI) {
     }
 
 
-    // пока работа с бекапами будет тут
-//    suspend fun updateOuterRepository() {
-//
-//    }
-//
-//    suspend fun getDataFromOuterRepository() {
-//
-//    }
+    suspend fun syncDatabase(): Boolean  {
+        val result: TaskRequest =
+        try{
+            outerRepo.getTasks()
+        } catch (e: HttpException) {
+            Log.v("SYNC_ERROR", e.message())
+            return false
+        } catch (e: Exception) {
+            Log.v("SYNC_ERROR", e.message.toString())
+            return false
+        }
+
+        Log.v("SYNC_ERROR", result.tasks.isEmpty().toString())
+
+        val currentState = database.taskDao().getAll()
+
+        if (currentState.isEmpty()) {
+            insertTasks(result, currentState)
+            return true
+        } else {
+            if (result.tasks != currentState) {
+                try {
+                    outerRepo.postTasks(TaskRequest(currentState))
+                } catch (e: HttpException) {
+                    Log.v("SYNC_ERROR", e.message())
+                    return false
+                } catch (e: Exception) {
+                    Log.v("SYNC_ERROR", e.message.toString())
+                    return false
+                }
+                insertTasks(result, currentState)
+            }
+            return true
+        }
+    }
+
+    private fun insertTasks(result: TaskRequest, currentState: List<TaskDb>) {
+        val difference = result.tasks.toSet().minus(currentState.toSet()).toList()
+
+        for (task in difference) {
+            // Log.v("SYNC_ERROR", task.text)
+            database.taskDao().insertTask(task)
+        }
+
+    }
 }
