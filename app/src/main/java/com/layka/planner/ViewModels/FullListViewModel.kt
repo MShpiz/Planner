@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.layka.planner.data.TaskItem
+import com.layka.planner.data.TaskType
 import com.layka.planner.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,13 +15,14 @@ import javax.inject.Inject
 @HiltViewModel
 class FullListViewModel @Inject constructor (private val repository: TaskRepository): ViewModel() {
     val tasks = mutableStateOf<List<TaskItem>>(listOf())
-    init {
-        getTasks()
-    }
 
-    fun getTasks() {
+    fun getTasks(type: TaskType? = null) {
        viewModelScope.launch {
-           tasks.value = repository.getAllTasks()
+           tasks.value = if (type == null){
+               repository.getAllTasks()
+           } else {
+               repository.getAllTasksByType(type)
+           }
        }
     }
 
@@ -34,11 +36,14 @@ class FullListViewModel @Inject constructor (private val repository: TaskReposit
         try {
             viewModelScope.launch {
                 repository.syncDatabase()
-                getTasks()
             }
         } catch (e: Exception){
             Log.v("SYNC_ERROR", e.message.toString())
         }
 
+    }
+
+    fun getTaskProgress(taskProgressCallback: (Float) -> Unit) {
+        taskProgressCallback((tasks.value.count { it.isDone }/tasks.value.count()).toFloat())
     }
 }

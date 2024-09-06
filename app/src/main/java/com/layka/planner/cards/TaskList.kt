@@ -24,11 +24,17 @@ import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 
 @Composable
-fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController: NavController) {
+fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(),
+              navController: NavController,
+              taskProgressCallback: (Float) -> Unit,
+              type: TaskType?) {
     val painter = painterResource(id = R.drawable.plus)
-    taskViewModel.getTasks()
+    taskViewModel.getTasks(type)
     Column(modifier = Modifier.fillMaxSize()){
-        Button(onClick = {taskViewModel.sync()}) {
+        Button(onClick = {
+            taskViewModel.sync()
+            taskViewModel.getTasks(type)
+        }) {
             Text(stringResource(id = R.string.sync))
         }
         if (taskViewModel.tasks.value.isEmpty()) {
@@ -38,7 +44,6 @@ fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController:
                 Image(painter, "no tasks")
                 Text(text = stringResource(id = R.string.no_tasks))
             }
-
         } else {
 
             LazyColumn(
@@ -56,6 +61,7 @@ fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController:
                         val updateChecked = fun() {
                             it.isDone = !it.isDone
                             taskViewModel.updateTask(it)
+                            taskViewModel.getTaskProgress(taskProgressCallback)
                         }
                         when (it.taskType) {
                             TaskType.DAILY ->

@@ -63,8 +63,10 @@ class TaskRepository @Inject constructor(
 
     }
 
-    suspend fun getAllTasksByType(taskType: TaskType) {
-        TODO("getAllTasksByType")
+    suspend fun getAllTasksByType(taskType: TaskType): List<TaskItem> {
+        val tasks = database.taskDao().getTasksByType(taskType)
+            .map { TaskItem(it.id, it.text, it.isDone, it.type, null) }
+        return tasks
     }
 
     suspend fun getAllTasksByCategory(taskCategory: TaskCategory) {
