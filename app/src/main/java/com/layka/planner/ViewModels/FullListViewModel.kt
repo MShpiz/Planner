@@ -1,5 +1,6 @@
 package com.layka.planner.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,5 +28,17 @@ class FullListViewModel @Inject constructor (private val repository: TaskReposit
         viewModelScope.launch {
             repository.saveTask(taskItem)
         }
+    }
+
+    fun sync() {
+        try {
+            viewModelScope.launch {
+                repository.syncDatabase()
+                getTasks()
+            }
+        } catch (e: Exception){
+            Log.v("SYNC_ERROR", e.message.toString())
+        }
+
     }
 }

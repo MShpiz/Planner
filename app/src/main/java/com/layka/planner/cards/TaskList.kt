@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,41 +27,46 @@ import com.layka.planner.data.TaskType
 fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(), navController: NavController) {
     val painter = painterResource(id = R.drawable.plus)
     taskViewModel.getTasks()
-    if (taskViewModel.tasks.value.isEmpty()) {
-        Column( horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()){
-            Image(painter, "no tasks")
-            Text(text = stringResource(id = R.string.no_tasks))
+    Column(modifier = Modifier.fillMaxSize()){
+        Button(onClick = {taskViewModel.sync()}) {
+            Text(stringResource(id = R.string.sync))
         }
-        
-    } else {
+        if (taskViewModel.tasks.value.isEmpty()) {
+            Column( horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()){
+                Image(painter, "no tasks")
+                Text(text = stringResource(id = R.string.no_tasks))
+            }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        } else {
 
-            itemsIndexed(taskViewModel.tasks.value) { index: Int, it: TaskItem ->
-                Box(
-                    modifier = Modifier.clickable {
-                        Log.v("ClickTrack", "clicked box of item ${it.id}")
-                        navController.navigate("edit_task/${it.id}")
-                    }
-                ) {
-                    val updateChecked = fun() {
-                        it.isDone = !it.isDone
-                        taskViewModel.updateTask(it)
-                    }
-                    when (it.taskType) {
-                        TaskType.DAILY ->
-                            DailyCard(it, updateChecked)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
 
-                        TaskType.WEEKLY ->
-                            WeeklyCard(it, updateChecked)
+                itemsIndexed(taskViewModel.tasks.value) { index: Int, it: TaskItem ->
+                    Box(
+                        modifier = Modifier.clickable {
+                            Log.v("ClickTrack", "clicked box of item ${it.id}")
+                            navController.navigate("edit_task/${it.id}")
+                        }
+                    ) {
+                        val updateChecked = fun() {
+                            it.isDone = !it.isDone
+                            taskViewModel.updateTask(it)
+                        }
+                        when (it.taskType) {
+                            TaskType.DAILY ->
+                                DailyCard(it, updateChecked)
 
-                        TaskType.DEFAULT -> {
-                            PlainCard(it, updateChecked)
+                            TaskType.WEEKLY ->
+                                WeeklyCard(it, updateChecked)
+
+                            TaskType.DEFAULT -> {
+                                PlainCard(it, updateChecked)
+                            }
                         }
                     }
                 }
