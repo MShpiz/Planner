@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.layka.planner.Screens.MainScreen
 import com.layka.planner.Screens.TaskEditScreen
 import com.layka.planner.Screens.TaskByTypeListScreen
 import com.layka.planner.ui.theme.PlannerTheme
@@ -27,7 +26,7 @@ class MainActivity() : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "main_screen") {
                     composable("main_screen") {
-                        MainScreen(navController)
+                        TaskByTypeListScreen(navController = navController)
                     }
 
                     composable(
@@ -64,7 +63,6 @@ class MainActivity() : ComponentActivity() {
                         TaskByTypeListScreen(navController = navController, type = type ?: 0)
                     }
                 }
-
             }
         }
     }

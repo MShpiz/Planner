@@ -32,5 +32,5 @@ interface TaskDao {
 
     @Transaction
     @Query("SELECT * FROM tasks WHERE taskType = :type")
-    suspend fun getTasksByType(type: TaskType): List<TaskDb>
+    suspend fun getTasksByType(type: Int): List<TaskDb>
 }

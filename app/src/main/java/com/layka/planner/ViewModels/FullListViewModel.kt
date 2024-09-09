@@ -44,6 +44,6 @@ class FullListViewModel @Inject constructor (private val repository: TaskReposit
     }
 
     fun getTaskProgress(taskProgressCallback: (Float) -> Unit) {
-        taskProgressCallback((tasks.value.count { it.isDone }/tasks.value.count()).toFloat())
+        taskProgressCallback((tasks.value.count { it.isDone }.toFloat()/tasks.value.count()))
     }
 }

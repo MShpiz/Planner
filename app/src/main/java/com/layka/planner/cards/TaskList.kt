@@ -24,12 +24,16 @@ import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 
 @Composable
-fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(),
-              navController: NavController,
-              taskProgressCallback: (Float) -> Unit,
-              type: TaskType?) {
+fun  TaskList(navController: NavController,
+              taskProgressCallback: ((Float) -> Unit)? = null,
+              type: TaskType? = null,
+              taskViewModel: FullListViewModel = hiltViewModel()) {
     val painter = painterResource(id = R.drawable.plus)
     taskViewModel.getTasks(type)
+    if (taskProgressCallback != null){
+        taskViewModel.getTaskProgress(taskProgressCallback)
+    }
+
     Column(modifier = Modifier.fillMaxSize()){
         Button(onClick = {
             taskViewModel.sync()
@@ -61,7 +65,8 @@ fun  TaskList(taskViewModel: FullListViewModel = hiltViewModel(),
                         val updateChecked = fun() {
                             it.isDone = !it.isDone
                             taskViewModel.updateTask(it)
-                            taskViewModel.getTaskProgress(taskProgressCallback)
+                            if (taskProgressCallback != null)
+                                taskViewModel.getTaskProgress(taskProgressCallback)
                         }
                         when (it.taskType) {
                             TaskType.DAILY ->
