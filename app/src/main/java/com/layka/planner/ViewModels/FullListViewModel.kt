@@ -23,6 +23,7 @@ class FullListViewModel @Inject constructor (private val repository: TaskReposit
            } else {
                repository.getAllTasksByType(type)
            }
+           tasks.value = tasks.value.sortedBy { it.isDone }
        }
     }
 
@@ -30,6 +31,7 @@ class FullListViewModel @Inject constructor (private val repository: TaskReposit
         viewModelScope.launch {
             repository.saveTask(taskItem)
         }
+
     }
 
     fun sync() {

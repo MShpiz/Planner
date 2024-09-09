@@ -47,7 +47,7 @@ class TaskRepository @Inject constructor(
 
     suspend fun saveTask(value: TaskItem) {
         if (value.id == null || (getTaskDetails(value.id) == null)) {
-            database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId))
+            database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId, null))
         } else {
             updateTask(value)
         }
@@ -75,7 +75,7 @@ class TaskRepository @Inject constructor(
     }
 
     private suspend fun updateTask(taskItem: TaskItem) {
-        database.taskDao().updateTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType, taskItem.category?.categoryId, taskItem.id!!))
+        database.taskDao().updateTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType, taskItem.category?.categoryId, taskItem.doneDate, taskItem.id!!))
     }
 
 

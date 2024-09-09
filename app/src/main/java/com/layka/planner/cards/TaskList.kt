@@ -22,6 +22,8 @@ import com.layka.planner.R
 import com.layka.planner.ViewModels.FullListViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
+import java.time.LocalDate
+import java.util.Date
 
 @Composable
 fun  TaskList(navController: NavController,
@@ -49,7 +51,6 @@ fun  TaskList(navController: NavController,
                 Text(text = stringResource(id = R.string.no_tasks))
             }
         } else {
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -64,6 +65,7 @@ fun  TaskList(navController: NavController,
                     ) {
                         val updateChecked = fun() {
                             it.isDone = !it.isDone
+                            it.doneDate = Date()
                             taskViewModel.updateTask(it)
                             if (taskProgressCallback != null)
                                 taskViewModel.getTaskProgress(taskProgressCallback)
