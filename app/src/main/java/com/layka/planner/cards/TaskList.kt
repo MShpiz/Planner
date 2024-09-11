@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,18 +20,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.layka.planner.R
-import com.layka.planner.ViewModels.FullListViewModel
+import com.layka.planner.ViewModels.ListViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
-import java.time.LocalDate
 import java.util.Date
 
 @Composable
 fun  TaskList(navController: NavController,
               taskProgressCallback: ((Float) -> Unit)? = null,
               type: TaskType? = null,
-              taskViewModel: FullListViewModel = hiltViewModel()) {
+              taskViewModel: ListViewModel = hiltViewModel()) {
     val painter = painterResource(id = R.drawable.plus)
+
     taskViewModel.getTasks(type)
     if (taskProgressCallback != null){
         taskViewModel.getTaskProgress(taskProgressCallback)
@@ -39,7 +40,6 @@ fun  TaskList(navController: NavController,
     Column(modifier = Modifier.fillMaxSize()){
         Button(onClick = {
             taskViewModel.sync()
-            taskViewModel.getTasks(type)
         }) {
             Text(stringResource(id = R.string.sync))
         }
@@ -64,9 +64,13 @@ fun  TaskList(navController: NavController,
                         }
                     ) {
                         val updateChecked = fun() {
-                            it.isDone = !it.isDone
-                            it.doneDate = Date()
-                            taskViewModel.updateTask(it)
+                            Log.v("ClickTrack", "${it.id} ${taskViewModel.tasks.value[index].isDone} ${it.taskText}")
+                            taskViewModel.tasks.value[index].isDone = !taskViewModel.tasks.value[index].isDone
+                            if (taskViewModel.tasks.value[index].isDone)
+                                it.doneDate = Date()
+                            else
+                                it.doneDate = null
+                            taskViewModel.updateTask(taskViewModel.tasks.value[index])
                             if (taskProgressCallback != null)
                                 taskViewModel.getTaskProgress(taskProgressCallback)
                         }

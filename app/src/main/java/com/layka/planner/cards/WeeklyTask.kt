@@ -1,12 +1,9 @@
 package com.layka.planner.cards
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.layka.planner.R
-import com.layka.planner.ViewModels.FullListViewModel
 import com.layka.planner.data.TaskItem
 
 @Composable
