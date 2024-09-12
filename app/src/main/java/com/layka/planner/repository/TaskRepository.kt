@@ -96,20 +96,18 @@ class TaskRepository @Inject constructor(
             insertTasks(result, currentState)
             return true
         } else {
-            if (result.tasks != currentState) {
-                try {
-                    outerRepo.postTasks(TaskRequest(currentState))
-                } catch (e: HttpException) {
-                    Log.v("SYNC_ERROR", e.message())
-                    return false
-                } catch (e: Exception) {
-                    Log.v("SYNC_ERROR", e.message.toString())
-                    return false
-                }
-                insertTasks(result, currentState)
+            try {
+                outerRepo.postTasks(TaskRequest(currentState))
+            } catch (e: HttpException) {
+                Log.v("SYNC_ERROR", e.message())
+                return false
+            } catch (e: Exception) {
+                Log.v("SYNC_ERROR", e.message.toString())
+                return false
             }
-            return true
         }
+        return true
+
     }
 
     private fun insertTasks(result: TaskRequest, currentState: List<TaskDb>) {
