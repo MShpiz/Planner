@@ -46,9 +46,11 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
     }
     val taskText = remember { mutableStateOf("") }
     val selectedType = remember { mutableStateOf(TaskType.DEFAULT) }
+    val selectedCategory = remember { mutableStateOf<Long?>(null) }
     val updateData = fun (t: TaskItem){ // обновление данных полсле получения из бд
         taskText.value = t.taskText
         selectedType.value = t.taskType
+        selectedCategory.value = t.category?.categoryId
     }
 
     if (!gotData.value) { // получение данных из бд должно произойти только 1 раз
@@ -58,6 +60,10 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
 
 
     val typeMenuExpanded = remember {
+        mutableStateOf(false)
+    }
+
+    val categoryMenuExpanded = remember {
         mutableStateOf(false)
     }
 
@@ -77,7 +83,8 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                 }
             )
 
-            ExposedDropdownMenuBox( // меню выбора типа задачи
+            // меню выбора типа задачи
+            ExposedDropdownMenuBox(
                 expanded = typeMenuExpanded.value,
                 onExpandedChange = { typeMenuExpanded.value = !typeMenuExpanded.value }
             ) {
@@ -104,16 +111,47 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                             text = { Text(text = ttype.name) })
                     }
                 }
-
             }
+
+            // меню выбора категории задачи
+            ExposedDropdownMenuBox(
+                expanded = categoryMenuExpanded.value,
+                onExpandedChange = { categoryMenuExpanded.value = !categoryMenuExpanded.value }
+            ) {
+                OutlinedTextField(
+                    value = taskViewModel.categoryItems.value[selectedCategory.value] ?: "no category",
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier.menuAnchor(),
+                    label = { Text("Type") },
+                    trailingIcon = {
+                        Icon(icon, "contentDescription")
+                    }
+                )
+                ExposedDropdownMenu(
+                    expanded = categoryMenuExpanded.value,
+                    onDismissRequest = { categoryMenuExpanded.value = false }
+                ) {
+                    taskViewModel.categoryItems.value.forEach { cat ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedCategory.value = cat.key
+                                categoryMenuExpanded.value = false
+                            },
+                            text = { Text(text = cat.value) })
+                    }
+                }
+            }
+
             Row {
                 Button(onClick = { // кнопка сохранения задачи
                     val result = taskViewModel.saveTask(
                         TaskItem(
                             id,
                             taskText = taskText.value,
-                            taskType = selectedType.value
-                        )
+                            taskType = selectedType.value,
+                        ),
+                        selectedCategory.value
                     )
                     if (result) {
                         navController.popBackStack()

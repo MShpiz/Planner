@@ -8,6 +8,7 @@ import com.layka.planner.entities.TaskDb
 import com.layka.planner.network.BackupApi
 import com.layka.planner.network.TaskRequest
 import retrofit2.HttpException
+import java.util.Locale.Category
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -121,5 +122,9 @@ class TaskRepository @Inject constructor(
             database.taskDao().insertTask(task)
         }
 
+    }
+
+    suspend fun getAllCategories(): List<TaskCategory> {
+        return database.taskCategoryDao().getAll().map { TaskCategory(it.id, it.name, it.tagColor, it.backgroundColor) }
     }
 }
