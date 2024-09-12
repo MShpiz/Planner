@@ -7,6 +7,4 @@ data class TaskCategory(
     val categoryName: String,
     val backgroundColor: Color = Color.White,
     val badgeColor: Color = Color.Gray
-){
-
-}
+)

@@ -30,7 +30,7 @@ class TaskRepository @Inject constructor(
                     foundCategory.tagColor
                 )
             }
-            result.add(TaskItem(t.id, t.text, t.isDone, t.type, cat))
+            result.add(TaskItem(t.id, t.text, t.isDone, t.type, cat, t.dateDone))
         }
         return result
     }
@@ -47,7 +47,7 @@ class TaskRepository @Inject constructor(
 
     suspend fun saveTask(value: TaskItem) {
         if (value.id == null || (getTaskDetails(value.id) == null)) {
-            database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId))
+            database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId, null))
         } else {
             updateTask(value)
         }
@@ -63,8 +63,11 @@ class TaskRepository @Inject constructor(
 
     }
 
-    suspend fun getAllTasksByType(taskType: TaskType) {
-        TODO("getAllTasksByType")
+    suspend fun getAllTasksByType(taskType: TaskType): List<TaskItem> {
+        val tasks = database.taskDao().getTasksByType(taskType.ordinal)
+            .map { TaskItem(it.id, it.text, it.isDone, it.type, null) }
+        Log.v("GET_TASKS", "${taskType.name} ${tasks.size}")
+        return tasks
     }
 
     suspend fun getAllTasksByCategory(taskCategory: TaskCategory) {
@@ -72,7 +75,7 @@ class TaskRepository @Inject constructor(
     }
 
     private suspend fun updateTask(taskItem: TaskItem) {
-        database.taskDao().updateTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType, taskItem.category?.categoryId, taskItem.id!!))
+        database.taskDao().updateTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType, taskItem.category?.categoryId, taskItem.doneDate, taskItem.id!!))
     }
 
 

@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.layka.planner.R
-import com.layka.planner.ViewModels.FullListViewModel
 
 @Composable
 fun BaseCard(
@@ -61,8 +60,8 @@ fun BaseCard(
     {
         Checkbox(checked = isDone.value, onCheckedChange = {
             newDone -> isDone.value = newDone
+            Log.v("ClickTrack", "clicked the checkBox ${isDone.value}")
             updateChecked()
-            Log.v("ClickTrack", "clicked the checkBox")
         } )
         Text(
             text = task,
