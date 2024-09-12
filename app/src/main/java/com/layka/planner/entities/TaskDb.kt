@@ -1,6 +1,5 @@
 package com.layka.planner.entities
 
-import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,7 +7,7 @@ import androidx.room.TypeConverters
 import com.layka.planner.data.TaskType
 import com.layka.planner.entities.typeConverters.DateConverter
 import com.layka.planner.entities.typeConverters.TaskTypeConverters
-import java.util.Date
+import java.time.LocalDate
 
 @TypeConverters(TaskTypeConverters::class, DateConverter::class)
 @Entity(tableName = "tasks")
@@ -26,7 +25,7 @@ data class TaskDb (
     var categoryId: Long?,
 
     @ColumnInfo(name="dateDone")
-    var dateDone: Date?,
+    var dateDone: LocalDate?,
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="taskId")

@@ -30,7 +30,7 @@ class TaskRepository @Inject constructor(
                     foundCategory.tagColor
                 )
             }
-            result.add(TaskItem(t.id, t.text, t.isDone, t.type, cat))
+            result.add(TaskItem(t.id, t.text, t.isDone, t.type, cat, t.dateDone))
         }
         return result
     }

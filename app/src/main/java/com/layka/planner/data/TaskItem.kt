@@ -9,5 +9,9 @@ data class TaskItem(
     var isDone: Boolean = false,
     var taskType: TaskType = TaskType.DEFAULT,
     val category: TaskCategory? = null,
-    var doneDate: Date? = null
-)
+    var doneDate: LocalDate? = null
+) {
+    override fun toString(): String {
+        return "$id $taskText $taskType $isDone $doneDate"
+    }
+}

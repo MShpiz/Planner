@@ -23,6 +23,7 @@ import com.layka.planner.R
 import com.layka.planner.ViewModels.ListViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
+import java.time.LocalDate
 import java.util.Date
 
 @Composable
@@ -67,9 +68,10 @@ fun  TaskList(navController: NavController,
                             Log.v("ClickTrack", "${it.id} ${taskViewModel.tasks.value[index].isDone} ${it.taskText}")
                             taskViewModel.tasks.value[index].isDone = !taskViewModel.tasks.value[index].isDone
                             if (taskViewModel.tasks.value[index].isDone)
-                                it.doneDate = Date()
+                                taskViewModel.tasks.value[index].doneDate = LocalDate.now()
                             else
-                                it.doneDate = null
+                                taskViewModel.tasks.value[index].doneDate = null
+                            Log.v("ClickTrack", taskViewModel.tasks.value[index].doneDate.toString())
                             taskViewModel.updateTask(taskViewModel.tasks.value[index])
                             if (taskProgressCallback != null)
                                 taskViewModel.getTaskProgress(taskProgressCallback)
