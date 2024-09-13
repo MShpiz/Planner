@@ -13,4 +13,6 @@
 
     <color name="light_mint">#DFFFED</color>
     <color name="mint">#41FF94</color>
+
+    <color name="transparent_grey">#57000000</color>
 </resources>

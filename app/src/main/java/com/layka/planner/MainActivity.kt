@@ -10,8 +10,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.layka.planner.Screens.TaskEditScreen
-import com.layka.planner.Screens.TaskByTypeListScreen
+import com.layka.planner.ComposableFuncs.Screens.CategoryEditScreen
+import com.layka.planner.ComposableFuncs.Screens.TaskEditScreen
+import com.layka.planner.ComposableFuncs.Screens.TaskByTypeListScreen
 import com.layka.planner.ui.theme.PlannerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -61,6 +62,9 @@ class MainActivity() : ComponentActivity() {
                             it.arguments?.getInt("type")
                         }
                         TaskByTypeListScreen(navController = navController, type = type ?: 0)
+                    }
+                    composable("create_category") {
+                        CategoryEditScreen(navController = navController)
                     }
                 }
             }

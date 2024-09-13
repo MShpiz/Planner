@@ -1,4 +1,4 @@
-package com.layka.planner.Screens
+package com.layka.planner.ComposableFuncs.Screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +12,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -30,7 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.layka.planner.cards.TaskList
+import com.layka.planner.ComposableFuncs.cards.TaskList
 import com.layka.planner.data.TaskType
 import kotlinx.coroutines.launch
 
@@ -71,6 +72,17 @@ fun TaskByTypeListScreen(navController: NavController, type: Int? = null) {
                             },
                         )
                     }
+                    HorizontalDivider()
+
+                    NavigationDrawerItem(
+                        label = {Text("create category")},
+                        selected = false,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            navController.navigate("create_category")
+                        }
+                    )
+                    /*category list*/
 
                 }
             }

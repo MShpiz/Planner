@@ -1,4 +1,4 @@
-package com.layka.planner.cards
+package com.layka.planner.ComposableFuncs.cards
 
 import android.util.Log
 import androidx.compose.foundation.Image

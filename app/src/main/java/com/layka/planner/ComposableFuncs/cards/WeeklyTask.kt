@@ -1,4 +1,4 @@
-package com.layka.planner.cards
+package com.layka.planner.ComposableFuncs.cards
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
@@ -7,25 +7,25 @@ import com.layka.planner.R
 import com.layka.planner.data.TaskItem
 
 @Composable
-fun DailyCard(task: TaskItem, updateChecked: ()->Unit) {
+fun WeeklyCard(task: TaskItem, updateChecked: ()->Unit) {
     BaseCard(
         task.taskText,
         task.isDone,
-        backgroundColor = colorResource(R.color.baby_blue),
-        tagText = stringResource(id = R.string.daily_tag_text),
-        tagColor = colorResource(R.color.light_blue),
+        backgroundColor = colorResource(R.color.light_mint),
+        tagColor = colorResource(R.color.mint),
+        tagText = stringResource(id = R.string.weekly_tag_text),
         updateChecked = updateChecked
     )
 }
 
 //@Composable
 //@Preview
-//fun DalyCardPreview() {
+//fun WeeklyCardPreview() {
 //    Column {
-//        DailyCard(
+//        WeeklyCard(
 //            TaskItem(null, "AAAAAAAAAA"),
 //            taskViewModel
 //        )
-//        DailyCard(TaskItem(null, "Text", isDone = true), taskViewModel)
+//        WeeklyCard(TaskItem(null, "Text", isDone = true), taskViewModel)
 //    }
 //}
