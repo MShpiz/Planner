@@ -4,11 +4,11 @@ import android.util.Log
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
+import com.layka.planner.entities.CategoryDb
 import com.layka.planner.entities.TaskDb
 import com.layka.planner.network.BackupApi
 import com.layka.planner.network.TaskRequest
 import retrofit2.HttpException
-import java.util.Locale.Category
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -31,6 +31,7 @@ class TaskRepository @Inject constructor(
                     foundCategory.tagColor
                 )
             }
+            Log.v("CAT_VAL", "db ${cat.toString()}")
             result.add(TaskItem(t.id, t.text, t.isDone, t.type, cat, t.dateDone))
         }
         return result
@@ -126,5 +127,27 @@ class TaskRepository @Inject constructor(
 
     suspend fun getAllCategories(): List<TaskCategory> {
         return database.taskCategoryDao().getAll().map { TaskCategory(it.id, it.name, it.tagColor, it.backgroundColor) }
+    }
+
+    suspend fun getCategoryDetails(id: Long): TaskCategory? {
+        val result =
+            try {
+                database.taskCategoryDao().getCategoryById(id)
+            } catch (e: Exception) {
+                return null
+            }
+        return TaskCategory(result.id, result.name, result.backgroundColor, result.tagColor)
+    }
+
+    suspend fun saveCategory(taskCategory: TaskCategory) {
+        database.taskCategoryDao().insertCategory(CategoryDb(taskCategory.categoryName, taskCategory.backgroundColor, taskCategory.tagColor))
+    }
+
+    suspend fun deleteCategory(id: Long) {
+        val cat = database.taskCategoryDao().getCategoryById(id)
+        if (cat == null) {
+            return
+        }
+        database.taskCategoryDao().deleteCategoryById(cat)
     }
 }

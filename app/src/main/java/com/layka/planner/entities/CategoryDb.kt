@@ -11,10 +11,6 @@ import com.layka.planner.entities.typeConverters.ColorConverters
 @TypeConverters(ColorConverters::class)
 @Entity(tableName ="TaskCategories")
 data class CategoryDb(
-    @PrimaryKey
-    @ColumnInfo("id")
-    var id: Long,
-
     @ColumnInfo("name")
     var name: String,
 
@@ -22,5 +18,9 @@ data class CategoryDb(
     var backgroundColor: Color,
 
     @ColumnInfo("tagColor")
-    var tagColor: Color
+    var tagColor: Color,
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo("id")
+    var id: Long = 0,
 )

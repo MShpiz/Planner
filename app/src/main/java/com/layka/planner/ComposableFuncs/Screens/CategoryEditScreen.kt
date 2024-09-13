@@ -1,7 +1,7 @@
 package com.layka.planner.ComposableFuncs.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -24,14 +22,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.layka.planner.ComposableFuncs.ColorPickerPanel
 import com.layka.planner.R
+import com.layka.planner.ViewModels.EditCategoryViewModel
+import com.layka.planner.data.TaskCategory
+
 
 @Composable
-fun CategoryEditScreen(navController: NavController, id: Long? = null, /*taskViewModel: TaskEditViewModel = hiltViewModel()*/) {
+fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel: EditCategoryViewModel = hiltViewModel()) {
+    val context = LocalContext.current // контекст для тоста
+
+    val showToast = fun (text: String) {
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    val gotData = remember {
+        mutableStateOf(false)
+    }
     val categoryName = remember {
         mutableStateOf("")
     }
@@ -43,6 +59,17 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, /*taskVie
     val catBackgroundColor = remember {
         mutableStateOf(Color.White)
     }
+
+    if (!gotData.value) {
+        viewModel.getCategory(id,
+            fun (cat: TaskCategory){
+                categoryName.value = cat.categoryName
+                catBackgroundColor.value = cat.backgroundColor
+                tagColor.value = cat.tagColor
+                gotData.value = true
+        })
+    }
+
     val currentColorField = remember {
         mutableStateOf<Int?>(null)
     }
@@ -79,11 +106,28 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, /*taskVie
                 ColorField("card background color: ", 2, catBackgroundColor, openColorPicker)
 
                 Row {
-                    Button(onClick = { navController.popBackStack() }) {
+                    Button(onClick = {
+                        val res = viewModel.save(TaskCategory(id, categoryName.value, catBackgroundColor.value, tagColor.value))
+                        if (res)
+                            navController.popBackStack()
+                        else
+                            showToast("category name is blank")
+                    }) {
                         Text(text = "Save")
+                    }
+                    if (id != null) {
+
+
+                        Button(onClick = {
+                            viewModel.delete(id)
+                            navController.popBackStack()
+                            }) {
+                            Text(text = "Delete")
+                        }
                     }
                 }
             }
+            // color picker "pop up"
             Box(modifier = Modifier
                 .matchParentSize()
                 .then(

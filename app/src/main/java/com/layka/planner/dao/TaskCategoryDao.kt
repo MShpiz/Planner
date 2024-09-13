@@ -1,6 +1,7 @@
 package com.layka.planner.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -24,4 +25,7 @@ interface TaskCategoryDao {
     @Transaction
     @Query("SELECT * FROM TaskCategories WHERE id = :categoryId")
     suspend fun getCategoryById(categoryId: Long): CategoryDb
+
+    @Delete
+    suspend fun deleteCategoryById(categoryDb: CategoryDb)
 }

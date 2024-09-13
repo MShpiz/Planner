@@ -35,12 +35,6 @@ class TaskEditViewModel @Inject constructor(private val repository: TaskReposito
         }
     }
 
-//    suspend fun getTaskInfo(id: Long?): TaskItem {
-//        if (id == null)
-//            return TaskItem(null, "")
-//        return repository.getTaskDetails(id) ?: TaskItem(null, "")
-//    }
-
     fun saveTask(task: TaskItem, selectedCategory: Long?): Boolean {
         if (task.taskText.isBlank()) {
             return false

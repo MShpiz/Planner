@@ -1,4 +1,4 @@
-package com.layka.planner.ComposableFuncs.cards
+package com.layka.planner.ComposableFuncs
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -12,19 +12,21 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.layka.planner.ComposableFuncs.cards.CategoryCard
+import com.layka.planner.ComposableFuncs.cards.DailyCard
+import com.layka.planner.ComposableFuncs.cards.PlainCard
+import com.layka.planner.ComposableFuncs.cards.WeeklyCard
 import com.layka.planner.R
 import com.layka.planner.ViewModels.ListViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 import java.time.LocalDate
-import java.util.Date
 
 @Composable
 fun  TaskList(navController: NavController,
@@ -67,24 +69,30 @@ fun  TaskList(navController: NavController,
                         val updateChecked = fun() {
                             Log.v("ClickTrack", "${it.id} ${taskViewModel.tasks.value[index].isDone} ${it.taskText}")
                             taskViewModel.tasks.value[index].isDone = !taskViewModel.tasks.value[index].isDone
+
                             if (taskViewModel.tasks.value[index].isDone)
                                 taskViewModel.tasks.value[index].doneDate = LocalDate.now()
                             else
                                 taskViewModel.tasks.value[index].doneDate = null
+
                             Log.v("ClickTrack", taskViewModel.tasks.value[index].doneDate.toString())
                             taskViewModel.updateTask(taskViewModel.tasks.value[index])
                             if (taskProgressCallback != null)
                                 taskViewModel.getTaskProgress(taskProgressCallback)
                         }
-                        when (it.taskType) {
-                            TaskType.DAILY ->
-                                DailyCard(it, updateChecked)
+                        if (it.category != null){
+                            CategoryCard(it, updateChecked)
+                        } else {
+                            when (it.taskType) {
+                                TaskType.DAILY ->
+                                    DailyCard(it, updateChecked)
 
-                            TaskType.WEEKLY ->
-                                WeeklyCard(it, updateChecked)
+                                TaskType.WEEKLY ->
+                                    WeeklyCard(it, updateChecked)
 
-                            TaskType.DEFAULT -> {
-                                PlainCard(it, updateChecked)
+                                TaskType.DEFAULT -> {
+                                    PlainCard(it, updateChecked)
+                                }
                             }
                         }
                     }
@@ -93,5 +101,7 @@ fun  TaskList(navController: NavController,
         }
     }
 }
+
+
 
 
