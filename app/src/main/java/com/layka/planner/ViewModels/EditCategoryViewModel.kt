@@ -32,6 +32,8 @@ class EditCategoryViewModel @Inject constructor(private val repository: TaskRepo
     }
 
     fun delete(id: Long) {
-        repository.deleteCategory(id)
+        viewModelScope.launch {
+            repository.deleteCategory(id)
+        }
     }
 }
