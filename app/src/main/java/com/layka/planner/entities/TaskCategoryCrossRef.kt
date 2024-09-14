@@ -5,19 +5,18 @@ import androidx.room.Entity
 import androidx.room.Junction
 import androidx.room.Relation
 
-@Entity(primaryKeys = ["id", "categoryId"])
-data class TaskCategoryCrossRef (
-    var id: Int,
-    var categoryId: Int
-)
+//@Entity(primaryKeys = ["id", "categoryId"])
+//data class TaskCategoryCrossRef (
+//    var id: Long,
+//    var categoryId: Long?
+//)
 
 class CategoriesWithTasks(
-    @Embedded var category: CategoryDb,
+    @Embedded val category: CategoryDb,
 
     @Relation(
         parentColumn = "id",
-        entityColumn = "categoryId",
-        associateBy = Junction(TaskCategoryCrossRef::class)
+        entityColumn = "categoryId"
     )
-    var tasks: List<TaskDb>
+    val tasks: List<TaskDb>
 )

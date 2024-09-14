@@ -44,7 +44,13 @@ class TaskRepository @Inject constructor(
         } catch (e: Exception) {
             return null
         }
-        return TaskItem(id = task.id,taskText = task.text, isDone = task.isDone, taskType = task.type)
+        var category: TaskCategory? = null
+        if (task.categoryId != null) {
+            val tmp = database.taskCategoryDao().getCategoryById(task.categoryId!!)
+            category = TaskCategory(tmp.id, tmp.name, tmp.backgroundColor, tmp.tagColor)
+        }
+
+        return TaskItem(id = task.id,taskText = task.text, isDone = task.isDone, taskType = task.type, category = category)
     }
 
     suspend fun saveTask(value: TaskItem) {
@@ -72,8 +78,13 @@ class TaskRepository @Inject constructor(
         return tasks
     }
 
-    suspend fun getAllTasksByCategory(taskCategory: TaskCategory) {
-        TODO("getAllTasksByCategory")
+    suspend fun getAllTasksByCategory(taskCategory: TaskCategory): List<TaskItem> {
+        return database.taskDao()
+            .getTasksOfCategory(taskCategory.categoryId)
+            .tasks
+            .map{
+                TaskItem(it.id, it.text, it.isDone, it.type, taskCategory, it.dateDone)
+            }
     }
 
     private suspend fun updateTask(taskItem: TaskItem) {
@@ -147,6 +158,9 @@ class TaskRepository @Inject constructor(
         val cat = database.taskCategoryDao().getCategoryById(id)
         if (cat == null) {
             return
+        }
+        database.taskDao().getTasksOfCategory(id).tasks.map{
+            database.taskDao().deleteTask(it)
         }
         database.taskCategoryDao().deleteCategoryById(cat)
     }

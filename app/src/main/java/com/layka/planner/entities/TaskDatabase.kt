@@ -9,8 +9,7 @@ import com.layka.planner.repository.DatabaseAPI
 @Database(
     entities = [
         TaskDb::class,
-        CategoryDb::class,
-        TaskCategoryCrossRef::class
+        CategoryDb::class
     ],
     version = 1
 )

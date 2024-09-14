@@ -13,23 +13,23 @@ import java.time.LocalDate
 @Entity(tableName = "tasks")
 data class TaskDb (
     @ColumnInfo(name="taskText")
-    var text: String,
+    val text: String,
 
     @ColumnInfo(name="isDone")
-    var isDone: Boolean,
+    val isDone: Boolean,
 
     @ColumnInfo(name="taskType")
-    var type: TaskType,
+    val type: TaskType,
 
     @ColumnInfo(name="categoryId")
-    var categoryId: Long?,
+    val categoryId: Long?,
 
     @ColumnInfo(name="dateDone")
-    var dateDone: LocalDate?,
+    val dateDone: LocalDate?,
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="taskId")
-    var id:Long = 0
+    val id:Long = 0
 )
 
 
