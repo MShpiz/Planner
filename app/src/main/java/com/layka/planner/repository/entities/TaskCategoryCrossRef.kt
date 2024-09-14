@@ -1,4 +1,4 @@
-package com.layka.planner.entities
+package com.layka.planner.repository.entities
 
 import androidx.room.Embedded
 import androidx.room.Entity

@@ -1,4 +1,4 @@
-package com.layka.planner.entities.typeConverters
+package com.layka.planner.repository.entities.typeConverters
 
 
 import android.util.Log

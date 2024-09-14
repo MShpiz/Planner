@@ -4,8 +4,8 @@ import android.util.Log
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
-import com.layka.planner.entities.CategoryDb
-import com.layka.planner.entities.TaskDb
+import com.layka.planner.repository.entities.CategoryDb
+import com.layka.planner.repository.entities.TaskDb
 import com.layka.planner.network.BackupApi
 import com.layka.planner.network.TaskRequest
 import retrofit2.HttpException
@@ -38,7 +38,7 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun getTaskDetails(id: Long): TaskItem? {
-        val task:TaskDb
+        val task: TaskDb
         try {
             task = database.taskDao().getTaskById(id)
         } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package com.layka.planner.dao
+package com.layka.planner.repository.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,8 +7,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
-import com.layka.planner.entities.CategoriesWithTasks
-import com.layka.planner.entities.TaskDb
+import com.layka.planner.repository.entities.CategoriesWithTasks
+import com.layka.planner.repository.entities.TaskDb
 
 @Dao
 interface TaskDao {

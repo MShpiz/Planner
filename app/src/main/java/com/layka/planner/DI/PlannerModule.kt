@@ -2,9 +2,9 @@ package com.layka.planner.DI
 
 import android.content.Context
 import androidx.room.Room
-import com.layka.planner.entities.TaskDatabase
+import com.layka.planner.repository.entities.TaskDatabase
 // import com.layka.planner.entities.typeConverters.ColorConverters
-import com.layka.planner.entities.typeConverters.TaskTypeConverters
+import com.layka.planner.repository.entities.typeConverters.TaskTypeConverters
 import com.layka.planner.network.BackupApi
 import com.layka.planner.repository.TaskRepository
 import com.layka.planner.repository.DatabaseAPI

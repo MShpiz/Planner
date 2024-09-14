@@ -1,9 +1,9 @@
-package com.layka.planner.entities
+package com.layka.planner.repository.entities
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.layka.planner.dao.TaskCategoryDao
-import com.layka.planner.dao.TaskDao
+import com.layka.planner.repository.dao.TaskCategoryDao
+import com.layka.planner.repository.dao.TaskDao
 import com.layka.planner.repository.DatabaseAPI
 
 @Database(
