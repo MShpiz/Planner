@@ -27,14 +27,21 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.layka.planner.ComposableFuncs.TaskList
+import com.layka.planner.ViewModels.MainScreenViewModel
 import com.layka.planner.data.TaskType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskByTypeListScreen(navController: NavController, type: Int? = null) {
+fun TaskByTypeListScreen(
+    navController: NavController,
+    type: Int? = null,
+    veiwModel: MainScreenViewModel = hiltViewModel(),
+    catId: Long? = null
+) {
     val progress = remember{
         mutableFloatStateOf(0.0f)
     }
@@ -71,15 +78,25 @@ fun TaskByTypeListScreen(navController: NavController, type: Int? = null) {
                     }
                     HorizontalDivider()
 
+                    veiwModel.categoryItems.value.forEach{
+                        NavigationDrawerItem(
+                            label = { Text(text = it.value)},
+                            selected = false,
+                            onClick = {
+                                navController.navigate("/category/${it.key}")
+                            }
+                        )
+                    }
+
                     NavigationDrawerItem(
                         label = {Text("create category")},
                         selected = false,
                         onClick = {
                             scope.launch { drawerState.close() }
                             navController.navigate("create_category")
-                        }
+                        },
+                        icon = {Icon(Icons.Default.Add, contentDescription = "create category")}
                     )
-                    /*category list*/
 
                 }
             }
@@ -129,6 +146,11 @@ fun TaskByTypeListScreen(navController: NavController, type: Int? = null) {
                         taskProgressCallback = updateProgress,
                         type = TaskType.entries[type % TaskType.entries.size]
                     )
+                } else if (catId != null) {
+                    TaskList(
+                        navController = navController,
+                        catId = catId
+                        )
                 } else {
                     TaskList(navController = navController)
                 }

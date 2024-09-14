@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 import com.layka.planner.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.WeekFields
@@ -41,13 +41,20 @@ class ListViewModel @Inject constructor (private val repository: TaskRepository)
         return item
     }
 
-    fun getTasks(type: TaskType? = null) {
+    fun getTasks(type: TaskType? = null, catId: Long? = null) {
         viewModelScope.launch {
             tasks.value =
-           if (type == null){
+           if (type != null){
+               repository.getAllTasksByType(type).map { unCheck(it) }.sortedBy { it.isDone }
+           } else if (catId != null) {
+               val category: TaskCategory? = repository.getCategoryDetails(catId)
+               if (category != null){
+                   repository.getAllTasksByCategory(category).map { unCheck(it) }.sortedBy { it.isDone }
+               } else {
+                   listOf()
+               }
+            } else {
                repository.getAllTasks().map { unCheck(it) }.sortedBy { it.isDone }
-           } else {
-               repository.getAllTasksByType(type).sortedBy { it.isDone }
            }
            Log.v("GET_TASKS", tasks.value.size.toString())
         }
@@ -57,8 +64,6 @@ class ListViewModel @Inject constructor (private val repository: TaskRepository)
     fun updateTask(taskItem: TaskItem) {
         viewModelScope.launch {
             repository.saveTask(taskItem)
-            delay(500L)
-            //tasks.value = tasks.value.sortedBy { it.isDone }
         }
     }
 

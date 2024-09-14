@@ -29,23 +29,30 @@ import com.layka.planner.data.TaskType
 import java.time.LocalDate
 
 @Composable
-fun  TaskList(navController: NavController,
-              taskProgressCallback: ((Float) -> Unit)? = null,
-              type: TaskType? = null,
-              taskViewModel: ListViewModel = hiltViewModel()) {
+fun  TaskList(
+    navController: NavController,
+    taskProgressCallback: ((Float) -> Unit)? = null,
+    type: TaskType? = null,
+    taskViewModel: ListViewModel = hiltViewModel(),
+    catId: Long? = null,
+    onlyUncategorized: Boolean = false
+) {
     val painter = painterResource(id = R.drawable.plus)
 
-    taskViewModel.getTasks(type)
+    taskViewModel.getTasks(type, catId)
     if (taskProgressCallback != null){
         taskViewModel.getTaskProgress(taskProgressCallback)
     }
 
     Column(modifier = Modifier.fillMaxSize()){
-        Button(onClick = {
-            taskViewModel.sync()
-        }) {
-            Text(stringResource(id = R.string.sync))
+        if (type == null && catId == null && !onlyUncategorized) {
+            Button(onClick = {
+                taskViewModel.sync()
+            }) {
+                Text(stringResource(id = R.string.sync))
+            }
         }
+
         if (taskViewModel.tasks.value.isEmpty()) {
             Column( horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,

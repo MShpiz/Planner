@@ -27,7 +27,10 @@ class MainActivity() : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "main_screen") {
                     composable("main_screen") {
-                        TaskByTypeListScreen(navController = navController)
+                        TaskByTypeListScreen(
+                            navController = navController,
+                            catId = null
+                        )
                     }
 
                     composable(
@@ -61,10 +64,30 @@ class MainActivity() : ComponentActivity() {
                         val type = remember {
                             it.arguments?.getInt("type")
                         }
-                        TaskByTypeListScreen(navController = navController, type = type ?: 0)
+                        TaskByTypeListScreen(
+                            navController = navController,
+                            type = type ?: 0,
+                            catId = null
+                        )
                     }
                     composable("create_category") {
                         CategoryEditScreen(navController = navController)
+                    }
+                    composable("/category/{id}",
+                        arguments = listOf(
+                            navArgument("id"){
+                                type = NavType.LongType
+                                nullable = false
+                            }
+                        )
+                    ) {
+                        val id = remember {
+                            it.arguments?.getLong("id")
+                        }
+                        TaskByTypeListScreen(
+                            navController = navController,
+                            catId = id
+                        )
                     }
                 }
             }
