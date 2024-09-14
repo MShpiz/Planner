@@ -12,8 +12,7 @@ fun DailyCard(task: TaskItem, updateChecked: ()->Unit) {
         task.taskText,
         task.isDone,
         backgroundColor = colorResource(R.color.baby_blue),
-        tagText = stringResource(id = R.string.daily_tag_text),
-        tagColor = colorResource(R.color.light_blue),
+        tagList = listOf(Pair(stringResource(id = R.string.daily_tag_text), colorResource(R.color.light_blue))),
         updateChecked = updateChecked
     )
 }

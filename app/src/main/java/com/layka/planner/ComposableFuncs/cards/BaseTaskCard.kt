@@ -16,9 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -30,8 +35,7 @@ fun BaseCard(
     task: String,
     done: Boolean,
     backgroundColor: Color,
-    tagColor: Color = colorResource(R.color.teal_200),
-    tagText: String? = null,
+    tagList: List<Pair<String, Color>> = listOf(),
     updateChecked: ()->Unit
 ) {
     val isDone: MutableState<Boolean> =
@@ -47,13 +51,7 @@ fun BaseCard(
             .shadow(elevation = 2.dp, shape = RoundedCornerShape(5.dp))
             .padding(bottom=2.dp)
             .clip(RoundedCornerShape(5.dp))
-
-
             .background(backgroundColor)
-//            .clickable {
-//                Log.v("ClickTrack", "clicked the task")
-//                isFullyShown.value = !isFullyShown.value
-//            }
             .padding(start = 3.dp, end = 10.dp)
             .fillMaxWidth()
     )
@@ -63,13 +61,14 @@ fun BaseCard(
             Log.v("ClickTrack", "clicked the checkBox ${isDone.value}")
             updateChecked()
         } )
+
         Text(
             text = task,
             fontSize = 15.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = if (isFullyShown.value) {Int.MAX_VALUE} else {1},
-            style = if (!isDone.value) {TextStyle(textDecoration = TextDecoration.None)} else {
-                TextStyle(textDecoration = TextDecoration.LineThrough)
+            style = if (!isDone.value) {TextStyle(textDecoration = TextDecoration.None, color = getTextColor(backgroundColor))} else {
+                TextStyle(textDecoration = TextDecoration.LineThrough, color = getTextColor(backgroundColor))
             },
 
             modifier = Modifier
@@ -77,16 +76,26 @@ fun BaseCard(
                 .padding(end = 10.dp)
             )
 
-        if (tagText != null) {
-            Text( // tag
-                text = tagText,
-                style = TextStyle(color=colorResource(R.color.white)),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(100.dp))
-                    .background(tagColor)
-                    .padding(start = 8.dp, end = 8.dp, bottom = 3.dp, top = 1.dp)
-            )
+        tagList.forEach{
+            Tag(it.first, it.second)
         }
-
     }
+}
+
+fun getTextColor(color: Color): Color{
+    return if ((color.red*0.299 + color.green*0.587 + color.blue*0.114) > 0.6) Color.Black else Color.White
+}
+
+@Composable
+fun Tag(text:String, color: Color) {
+    val textColor = getTextColor(color)
+    Text( // tag
+        text = text,
+        style = TextStyle(color=textColor),
+        modifier = Modifier
+            .padding(2.dp)
+            .clip(RoundedCornerShape(100.dp))
+            .background(color)
+            .padding(start = 8.dp, end = 8.dp, bottom = 3.dp, top = 1.dp)
+    )
 }

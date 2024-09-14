@@ -12,8 +12,7 @@ fun WeeklyCard(task: TaskItem, updateChecked: ()->Unit) {
         task.taskText,
         task.isDone,
         backgroundColor = colorResource(R.color.light_mint),
-        tagColor = colorResource(R.color.mint),
-        tagText = stringResource(id = R.string.weekly_tag_text),
+        tagList = mutableListOf(Pair(stringResource(id = R.string.weekly_tag_text), colorResource(R.color.mint))),
         updateChecked = updateChecked
     )
 }
