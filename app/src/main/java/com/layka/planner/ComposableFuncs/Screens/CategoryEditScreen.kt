@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +36,7 @@ import com.layka.planner.ViewModels.EditCategoryViewModel
 import com.layka.planner.data.TaskCategory
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel: EditCategoryViewModel = hiltViewModel()) {
     val context = LocalContext.current // контекст для тоста
@@ -88,6 +92,7 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
     }
 
     Scaffold(
+        topBar = { TopAppBar(title = { Text(text = if (id != null) "Edit Category" else "Create Category")}) },
         modifier = Modifier.fillMaxSize()
     ){ innerPadding ->
         Box(
@@ -99,18 +104,25 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
                     .fillMaxSize()
                     .blur(if (isColorPickerOpen.value) 10.dp else 0.dp)
             ) {
-                TextField(value = categoryName.value, onValueChange = { categoryName.value = it })
+                TextField(value = categoryName.value, onValueChange = { categoryName.value = it },  Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth())
 
                 ColorField("tag color: ", 1, tagColor, openColorPicker)
 
-                Row {
+                Row( Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()) {
                     Button(onClick = {
                         val res = viewModel.save(TaskCategory(id, categoryName.value, tagColor.value))
                         if (res)
                             navController.popBackStack()
                         else
                             showToast("category name is blank")
-                    }) {
+                    },
+                        Modifier.padding(10.dp).weight(1f)) {
                         Text(text = "Save")
                     }
                     if (id != null) {
@@ -119,7 +131,7 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
                         Button(onClick = {
                             viewModel.delete(id)
                             navController.popBackStack()
-                            }) {
+                            },Modifier.padding(10.dp).weight(1f)) {
                             Text(text = "Delete")
                         }
                     }
@@ -164,7 +176,10 @@ fun ColorField(
     currentColor: MutableState<Color>,
     changeColor: (Int) -> Unit,
 ) {
-    Row {
+    Row( Modifier
+        .padding(horizontal = 10.dp)
+        .padding(bottom = 10.dp)
+        .fillMaxWidth()) {
         Text(fieldName,
             Modifier
                 .align(Alignment.CenterVertically)
