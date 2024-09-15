@@ -7,10 +7,18 @@ import com.layka.planner.data.TaskItem
 
 @Composable
 fun PlainCard(task: TaskItem, updateChecked: ()->Unit) {
+    val tags = if (task.category != null){
+         mutableListOf(Pair(task.category!!.categoryName, task.category!!.tagColor))
+    } else {
+        mutableListOf()
+    }
+
     BaseCard(
         task.taskText,
         task.isDone,
         backgroundColor = colorResource(R.color.white),
-        updateChecked = updateChecked
+        tagList = tags,
+        updateChecked = updateChecked,
+        doneDate = task.doneDate
     )
 }

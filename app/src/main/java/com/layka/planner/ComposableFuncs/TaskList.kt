@@ -18,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.layka.planner.ComposableFuncs.cards.CategoryCard
 import com.layka.planner.ComposableFuncs.cards.DailyCard
 import com.layka.planner.ComposableFuncs.cards.PlainCard
 import com.layka.planner.ComposableFuncs.cards.WeeklyCard
@@ -87,19 +86,16 @@ fun  TaskList(
                             if (taskProgressCallback != null)
                                 taskViewModel.getTaskProgress(taskProgressCallback)
                         }
-                        if (it.category != null){
-                            CategoryCard(it, updateChecked)
-                        } else {
-                            when (it.taskType) {
-                                TaskType.DAILY ->
-                                    DailyCard(it, updateChecked)
 
-                                TaskType.WEEKLY ->
-                                    WeeklyCard(it, updateChecked)
+                        when (it.taskType) {
+                            TaskType.DAILY ->
+                                DailyCard(it, updateChecked)
 
-                                TaskType.DEFAULT -> {
-                                    PlainCard(it, updateChecked)
-                                }
+                            TaskType.WEEKLY ->
+                                WeeklyCard(it, updateChecked)
+
+                            TaskType.DEFAULT -> {
+                                PlainCard(it, updateChecked)
                             }
                         }
                     }

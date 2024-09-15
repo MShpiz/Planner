@@ -14,9 +14,6 @@ data class CategoryDb(
     @ColumnInfo("name")
     val name: String,
 
-    @ColumnInfo("bgColor")
-    val backgroundColor: Color,
-
     @ColumnInfo("tagColor")
     val tagColor: Color,
 

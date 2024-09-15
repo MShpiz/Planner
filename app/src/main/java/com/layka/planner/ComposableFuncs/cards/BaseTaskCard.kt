@@ -2,12 +2,14 @@ package com.layka.planner.ComposableFuncs.cards
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -16,11 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -28,15 +26,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.layka.planner.R
+import java.time.LocalDate
 
 @Composable
 fun BaseCard(
     task: String,
     done: Boolean,
+    doneDate: LocalDate?,
     backgroundColor: Color,
     tagList: List<Pair<String, Color>> = listOf(),
-    updateChecked: ()->Unit
+    updateChecked: () -> Unit,
+    typeText: String? = null
 ) {
     val isDone: MutableState<Boolean> =
         remember { mutableStateOf(done) }
@@ -44,41 +44,66 @@ fun BaseCard(
         remember {
             mutableStateOf(false)
         }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
         modifier = Modifier
-            .padding(end = 10.dp, bottom=2.dp, start=5.dp, top=5.dp)
+            .padding(end = 10.dp, bottom = 2.dp, start = 5.dp, top = 5.dp)
             .shadow(elevation = 2.dp, shape = RoundedCornerShape(5.dp))
-            .padding(bottom=2.dp)
+            .padding(bottom = 2.dp)
             .clip(RoundedCornerShape(5.dp))
             .background(backgroundColor)
             .padding(start = 3.dp, end = 10.dp)
-            .fillMaxWidth()
-    )
-    {
-        Checkbox(checked = isDone.value, onCheckedChange = {
-            newDone -> isDone.value = newDone
-            Log.v("ClickTrack", "clicked the checkBox ${isDone.value}")
-            updateChecked()
-        } )
+            .fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        )
+        {
 
-        Text(
-            text = task,
-            fontSize = 15.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = if (isFullyShown.value) {Int.MAX_VALUE} else {1},
-            style = if (!isDone.value) {TextStyle(textDecoration = TextDecoration.None, color = getTextColor(backgroundColor))} else {
-                TextStyle(textDecoration = TextDecoration.LineThrough, color = getTextColor(backgroundColor))
-            },
+            Checkbox(checked = isDone.value, onCheckedChange = { newDone ->
+                isDone.value = newDone
+                Log.v("ClickTrack", "clicked the checkBox ${isDone.value}")
+                updateChecked()
+            })
 
-            modifier = Modifier
-                .weight(1F)
-                .padding(end = 10.dp)
+            Text(
+                text = task,
+                fontSize = 15.sp,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = if (!isDone.value) {
+                    TextStyle(
+                        textDecoration = TextDecoration.None,
+                        color = getTextColor(backgroundColor)
+                    )
+                } else {
+                    TextStyle(
+                        textDecoration = TextDecoration.LineThrough,
+                        color = getTextColor(backgroundColor)
+                    )
+                },
+
+                modifier = Modifier
+                    .weight(1F)
+                    .padding(end = 10.dp)
             )
 
-        tagList.forEach{
-            Tag(it.first, it.second)
+            tagList.forEach {
+                Tag(it.first, it.second)
+            }
         }
+
+        if (doneDate != null || typeText != null){
+            Row(Modifier.padding(start = 50.dp, bottom = 5.dp)) {
+                if (typeText != null) {
+                    Text(text = typeText, style = TextStyle(color = Color.LightGray, fontSize = 12.sp))
+                }
+                if (doneDate != null && typeText != null)
+                    Text(text = " | ", style = TextStyle(color = Color.LightGray, fontSize = 12.sp))
+                if (doneDate != null) {
+                    Text(text = doneDate.toString(), style = TextStyle(color = Color.LightGray, fontSize = 12.sp))
+                }
+            }
+        }
+
     }
 }
 

@@ -27,7 +27,6 @@ class TaskRepository @Inject constructor(
                 cat = TaskCategory(
                     foundCategory.id,
                     foundCategory.name,
-                    foundCategory.backgroundColor,
                     foundCategory.tagColor
                 )
             }
@@ -47,7 +46,7 @@ class TaskRepository @Inject constructor(
         var category: TaskCategory? = null
         if (task.categoryId != null) {
             val tmp = database.taskCategoryDao().getCategoryById(task.categoryId!!)
-            category = TaskCategory(tmp.id, tmp.name, tmp.backgroundColor, tmp.tagColor)
+            category = TaskCategory(tmp.id, tmp.name, tmp.tagColor)
         }
 
         return TaskItem(id = task.id,taskText = task.text, isDone = task.isDone, taskType = task.type, category = category)
@@ -137,7 +136,7 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun getAllCategories(): List<TaskCategory> {
-        return database.taskCategoryDao().getAll().map { TaskCategory(it.id, it.name, it.tagColor, it.backgroundColor) }
+        return database.taskCategoryDao().getAll().map { TaskCategory(it.id, it.name, it.tagColor) }
     }
 
     suspend fun getCategoryDetails(id: Long): TaskCategory? {
@@ -147,7 +146,7 @@ class TaskRepository @Inject constructor(
             } catch (e: Exception) {
                 return null
             }
-        return TaskCategory(result.id, result.name, result.backgroundColor, result.tagColor)
+        return TaskCategory(result.id, result.name, result.tagColor)
     }
 
     suspend fun saveCategory(taskCategory: TaskCategory) {
@@ -155,7 +154,6 @@ class TaskRepository @Inject constructor(
             database.taskCategoryDao().insertCategory(
                 CategoryDb(
                     taskCategory.categoryName,
-                    taskCategory.backgroundColor,
                     taskCategory.tagColor
                 )
             )
@@ -163,7 +161,6 @@ class TaskRepository @Inject constructor(
             database.taskCategoryDao().updateCategory(
                 CategoryDb(
                     taskCategory.categoryName,
-                    taskCategory.backgroundColor,
                     taskCategory.tagColor,
                     taskCategory.categoryId
                 )

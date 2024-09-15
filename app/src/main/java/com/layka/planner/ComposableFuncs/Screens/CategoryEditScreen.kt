@@ -64,7 +64,6 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
         viewModel.getCategory(id,
             fun (cat: TaskCategory){
                 categoryName.value = cat.categoryName
-                catBackgroundColor.value = cat.backgroundColor
                 tagColor.value = cat.tagColor
                 gotData.value = true
         })
@@ -103,11 +102,10 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
                 TextField(value = categoryName.value, onValueChange = { categoryName.value = it })
 
                 ColorField("tag color: ", 1, tagColor, openColorPicker)
-                ColorField("card background color: ", 2, catBackgroundColor, openColorPicker)
 
                 Row {
                     Button(onClick = {
-                        val res = viewModel.save(TaskCategory(id, categoryName.value, catBackgroundColor.value, tagColor.value))
+                        val res = viewModel.save(TaskCategory(id, categoryName.value, tagColor.value))
                         if (res)
                             navController.popBackStack()
                         else
