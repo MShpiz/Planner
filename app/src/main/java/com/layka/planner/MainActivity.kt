@@ -10,14 +10,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.layka.planner.ComposableFuncs.Screens.CategoryEditScreen
-import com.layka.planner.ComposableFuncs.Screens.TaskEditScreen
-import com.layka.planner.ComposableFuncs.Screens.TaskByTypeListScreen
+import com.layka.planner.composableFuncs.screens.CategoryEditScreen
+import com.layka.planner.composableFuncs.screens.TaskEditScreen
+import com.layka.planner.composableFuncs.screens.TaskByTypeListScreen
 import com.layka.planner.ui.theme.PlannerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity() : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

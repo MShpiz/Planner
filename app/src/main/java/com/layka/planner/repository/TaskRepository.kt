@@ -45,7 +45,7 @@ class TaskRepository @Inject constructor(
         }
         var category: TaskCategory? = null
         if (task.categoryId != null) {
-            val tmp = database.taskCategoryDao().getCategoryById(task.categoryId!!)
+            val tmp = database.taskCategoryDao().getCategoryById(task.categoryId)
             category = TaskCategory(tmp.id, tmp.name, tmp.tagColor)
         }
 

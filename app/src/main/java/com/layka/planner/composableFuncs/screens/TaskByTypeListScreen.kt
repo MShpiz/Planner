@@ -1,4 +1,4 @@
-package com.layka.planner.ComposableFuncs.Screens
+package com.layka.planner.composableFuncs.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -41,12 +41,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.layka.planner.ComposableFuncs.TaskList
+import com.layka.planner.composableFuncs.TaskList
 import com.layka.planner.R
 import com.layka.planner.ViewModels.MainScreenViewModel
 import com.layka.planner.data.TaskType
 import kotlinx.coroutines.launch
-import javax.annotation.meta.When
 
 @Composable
 fun CategoryDrawerLabel(it: Map.Entry<Long?, String>, navController: NavController, viewModel: MainScreenViewModel) {
@@ -117,7 +116,7 @@ fun TaskByTypeListScreen(
     }
 
     val updateProgress = fun (newValue: Float){
-        progress.value = newValue
+        progress.floatValue = newValue
     }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

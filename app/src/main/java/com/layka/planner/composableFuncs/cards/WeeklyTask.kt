@@ -1,4 +1,4 @@
-package com.layka.planner.ComposableFuncs.cards
+package com.layka.planner.composableFuncs.cards
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource

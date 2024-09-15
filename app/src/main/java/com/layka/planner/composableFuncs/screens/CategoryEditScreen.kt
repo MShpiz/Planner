@@ -1,4 +1,4 @@
-package com.layka.planner.ComposableFuncs.Screens
+package com.layka.planner.composableFuncs.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -30,7 +30,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.layka.planner.ComposableFuncs.ColorPickerPanel
+import com.layka.planner.composableFuncs.ColorPickerPanel
 import com.layka.planner.R
 import com.layka.planner.ViewModels.EditCategoryViewModel
 import com.layka.planner.data.TaskCategory

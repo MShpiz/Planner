@@ -1,4 +1,4 @@
-package com.layka.planner.ComposableFuncs.Screens
+package com.layka.planner.composableFuncs.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column

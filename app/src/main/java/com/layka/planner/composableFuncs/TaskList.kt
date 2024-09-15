@@ -1,4 +1,4 @@
-package com.layka.planner.ComposableFuncs
+package com.layka.planner.composableFuncs
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -18,9 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.layka.planner.ComposableFuncs.cards.DailyCard
-import com.layka.planner.ComposableFuncs.cards.PlainCard
-import com.layka.planner.ComposableFuncs.cards.WeeklyCard
+import com.layka.planner.composableFuncs.cards.DailyCard
+import com.layka.planner.composableFuncs.cards.PlainCard
+import com.layka.planner.composableFuncs.cards.WeeklyCard
 import com.layka.planner.R
 import com.layka.planner.ViewModels.ListViewModel
 import com.layka.planner.data.TaskItem
