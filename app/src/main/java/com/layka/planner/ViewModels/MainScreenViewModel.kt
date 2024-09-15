@@ -10,6 +10,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(private val repository: TaskRepository): ViewModel() {
+    fun deleteCategory(id: Long?) {
+        if (id == null) return
+        viewModelScope.launch {
+            repository.deleteCategory(id)
+        }
+    }
+
     val categoryItems = mutableStateOf(mapOf<Long?, String>())
 
     init {

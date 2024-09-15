@@ -89,6 +89,21 @@ class MainActivity() : ComponentActivity() {
                             catId = id
                         )
                     }
+
+                    composable(
+                        "edit_category/{id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                nullable = false
+                            }
+                        )
+                    ) {
+                        val id = remember {
+                            it.arguments?.getLong("id")
+                        }
+                        CategoryEditScreen(navController, id = id)
+                    }
                 }
             }
         }

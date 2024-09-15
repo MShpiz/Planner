@@ -151,7 +151,24 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun saveCategory(taskCategory: TaskCategory) {
-        database.taskCategoryDao().insertCategory(CategoryDb(taskCategory.categoryName, taskCategory.backgroundColor, taskCategory.tagColor))
+        if (taskCategory.categoryId == null || database.taskCategoryDao().getCategoryById(taskCategory.categoryId) == null) {
+            database.taskCategoryDao().insertCategory(
+                CategoryDb(
+                    taskCategory.categoryName,
+                    taskCategory.backgroundColor,
+                    taskCategory.tagColor
+                )
+            )
+        } else{
+            database.taskCategoryDao().updateCategory(
+                CategoryDb(
+                    taskCategory.categoryName,
+                    taskCategory.backgroundColor,
+                    taskCategory.tagColor,
+                    taskCategory.categoryId
+                )
+            )
+        }
     }
 
     suspend fun deleteCategory(id: Long) {

@@ -3,6 +3,7 @@ package com.layka.planner.ComposableFuncs.Screens
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -16,11 +17,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.layka.planner.ViewModels.TaskEditViewModel
@@ -69,33 +72,46 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
 
 
     val taskTypes = TaskType.entries.toMutableList()
-    val icon = if (typeMenuExpanded.value)
+    val typeMenuIcon = if (typeMenuExpanded.value)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+    val categoryMenuIcon = if (categoryMenuExpanded.value)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(text = if (id != null) "Edit Task" else "Create task")}) }
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             TextField( // текст задачи
                 value = taskText.value,
                 onValueChange = {
                     taskText.value = it
-                }
+                },
+                Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
             )
 
             // меню выбора типа задачи
             ExposedDropdownMenuBox(
                 expanded = typeMenuExpanded.value,
-                onExpandedChange = { typeMenuExpanded.value = !typeMenuExpanded.value }
+                onExpandedChange = { typeMenuExpanded.value = !typeMenuExpanded.value },
+                modifier = Modifier.padding(10.dp)
             ) {
                 OutlinedTextField(
                     value = taskTypes[selectedType.value.ordinal].name,
                     onValueChange = {},
                     readOnly = true,
-                    modifier = Modifier.menuAnchor(),
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
                     label = { Text("Type") },
                     trailingIcon = {
-                        Icon(icon, "contentDescription")
+                        Icon(typeMenuIcon, "open types")
                     }
                 )
                 ExposedDropdownMenu(
@@ -116,16 +132,19 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
             // меню выбора категории задачи
             ExposedDropdownMenuBox(
                 expanded = categoryMenuExpanded.value,
-                onExpandedChange = { categoryMenuExpanded.value = !categoryMenuExpanded.value }
+                onExpandedChange = { categoryMenuExpanded.value = !categoryMenuExpanded.value },
+                modifier = Modifier.padding(10.dp)
             ) {
                 OutlinedTextField(
                     value = taskViewModel.categoryItems.value[selectedCategory.value] ?: "no category",
                     onValueChange = {},
                     readOnly = true,
-                    modifier = Modifier.menuAnchor(),
-                    label = { Text("Type") },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    label = { Text("Category") },
                     trailingIcon = {
-                        Icon(icon, "contentDescription")
+                        Icon(categoryMenuIcon, "open categories")
                     }
                 )
                 ExposedDropdownMenu(
@@ -144,7 +163,8 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
             }
 
             Row {
-                Button(onClick = { // кнопка сохранения задачи
+                Button(
+                    onClick = { // кнопка сохранения задачи
                     val result = taskViewModel.saveTask(
                         TaskItem(
                             id,
@@ -158,7 +178,9 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                     } else {
                         showToast("task is empty")
                     }
-                }) {
+                },
+                    Modifier.padding(10.dp).weight(1f)
+                ) {
                     Text(text = "Save")
                 }
 
@@ -169,7 +191,8 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                         } else {
                             showToast("no such task")
                         }
-                    }) {
+                    },
+                        Modifier.padding(10.dp).weight(1f)) {
                         Text(text = "Delete")
                     }
                 }
