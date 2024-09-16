@@ -103,8 +103,8 @@ fun TaskByTypeListScreen(
             TaskType.WEEKLY -> stringResource(id = R.string.weekly_tag_text)
             TaskType.DEFAULT -> stringResource(id = R.string.non_repeating)
         }
-    } else if (catId != null && catId < viewModel.categoryItems.value.size) {
-        viewModel.categoryItems.value[catId]!!
+    } else if (catId != null && catId in viewModel.categoryItems.value.keys) {
+        viewModel.categoryItems.value[catId] ?: "Uncategorized"
     } else {
         stringResource(id = R.string.all_tasks)
     }

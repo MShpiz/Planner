@@ -83,7 +83,19 @@ class TaskRepository @Inject constructor(
 
     suspend fun getAllTasksByType(taskType: TaskType): List<TaskItem> {
         val tasks = database.taskDao().getTasksByType(taskType.ordinal)
-            .map { TaskItem(it.id, it.text, it.isDone, it.type, null) }
+            .map {
+                val category = if (it.categoryId != null){
+                    val tmp = database.taskCategoryDao().getCategoryById(it.categoryId)
+                    if (tmp != null) {
+                        TaskCategory(tmp.id, tmp.name, tmp.tagColor)
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
+                TaskItem(it.id, it.text, it.isDone, it.type, category)
+            }
         Log.v("GET_TASKS", "${taskType.name} ${tasks.size}")
         return tasks
     }
