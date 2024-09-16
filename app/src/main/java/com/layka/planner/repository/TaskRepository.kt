@@ -84,7 +84,7 @@ class TaskRepository @Inject constructor(
     suspend fun getAllTasksByType(taskType: TaskType): List<TaskItem> {
         val tasks = database.taskDao().getTasksByType(taskType.ordinal)
             .map {
-                val category = if (it.categoryId != null){
+                val category = if (it.categoryId != null) {
                     val tmp = database.taskCategoryDao().getCategoryById(it.categoryId)
                     if (tmp != null) {
                         TaskCategory(tmp.id, tmp.name, tmp.tagColor)
@@ -102,8 +102,8 @@ class TaskRepository @Inject constructor(
 
     suspend fun getAllTasksByCategory(taskCategory: TaskCategory): List<TaskItem> {
         return database.taskDao().getTasksOfCategory(taskCategory.categoryId).tasks.map {
-                TaskItem(it.id, it.text, it.isDone, it.type, taskCategory, it.dateDone)
-            }
+            TaskItem(it.id, it.text, it.isDone, it.type, taskCategory, it.dateDone)
+        }
     }
 
     private suspend fun updateTask(taskItem: TaskItem) {
