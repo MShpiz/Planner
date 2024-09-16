@@ -1,6 +1,5 @@
 package com.layka.planner.ViewModels
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TaskEditViewModel @Inject constructor(private val repository: TaskRepository): ViewModel() {
+class TaskEditViewModel @Inject constructor(private val repository: TaskRepository) : ViewModel() {
 
     val categoryItems = mutableStateOf(mapOf<Long?, String>(null to "no category"))
     private val categories = mutableStateOf(listOf<TaskCategory>())
@@ -29,8 +28,7 @@ class TaskEditViewModel @Inject constructor(private val repository: TaskReposito
     fun getTaskInfo(id: Long?, updateData: (TaskItem) -> Unit) {
         viewModelScope.launch {
             var res = TaskItem(null, "")
-            if (id != null)
-                 res = repository.getTaskDetails(id) ?: res
+            if (id != null) res = repository.getTaskDetails(id) ?: res
             updateData(res)
         }
     }

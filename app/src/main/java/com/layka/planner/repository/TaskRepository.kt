@@ -4,16 +4,15 @@ import android.util.Log
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
-import com.layka.planner.repository.entities.CategoryDb
-import com.layka.planner.repository.entities.TaskDb
 import com.layka.planner.network.BackupApi
 import com.layka.planner.network.TaskRequest
+import com.layka.planner.repository.entities.CategoryDb
+import com.layka.planner.repository.entities.TaskDb
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
-    private val database: DatabaseAPI,
-    private val outerRepo: BackupApi
+    private val database: DatabaseAPI, private val outerRepo: BackupApi
 ) {
 
     suspend fun getAllTasks(): MutableList<TaskItem> {
@@ -25,9 +24,7 @@ class TaskRepository @Inject constructor(
             val foundCategory = categories.find { it.id == t.categoryId }
             if (t.categoryId != null && foundCategory != null) {
                 cat = TaskCategory(
-                    foundCategory.id,
-                    foundCategory.name,
-                    foundCategory.tagColor
+                    foundCategory.id, foundCategory.name, foundCategory.tagColor
                 )
             }
             Log.v("CAT_VAL", "db ${cat.toString()}")
@@ -49,12 +46,26 @@ class TaskRepository @Inject constructor(
             category = TaskCategory(tmp.id, tmp.name, tmp.tagColor)
         }
 
-        return TaskItem(id = task.id,taskText = task.text, isDone = task.isDone, taskType = task.type, category = category)
+        return TaskItem(
+            id = task.id,
+            taskText = task.text,
+            isDone = task.isDone,
+            taskType = task.type,
+            category = category
+        )
     }
 
     suspend fun saveTask(value: TaskItem) {
         if (value.id == null || (getTaskDetails(value.id) == null)) {
-            database.taskDao().insertTask(TaskDb(value.taskText, value.isDone, value.taskType, value.category?.categoryId, null))
+            database.taskDao().insertTask(
+                TaskDb(
+                    value.taskText,
+                    value.isDone,
+                    value.taskType,
+                    value.category?.categoryId,
+                    null
+                )
+            )
         } else {
             updateTask(value)
         }
@@ -64,7 +75,7 @@ class TaskRepository @Inject constructor(
     suspend fun deleteTask(id: Long) {
         val task = database.taskDao().getTaskById(id)
 
-        if (task != null){
+        if (task != null) {
             database.taskDao().deleteTask(task)
         }
 
@@ -78,22 +89,27 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun getAllTasksByCategory(taskCategory: TaskCategory): List<TaskItem> {
-        return database.taskDao()
-            .getTasksOfCategory(taskCategory.categoryId)
-            .tasks
-            .map{
+        return database.taskDao().getTasksOfCategory(taskCategory.categoryId).tasks.map {
                 TaskItem(it.id, it.text, it.isDone, it.type, taskCategory, it.dateDone)
             }
     }
 
     private suspend fun updateTask(taskItem: TaskItem) {
-        database.taskDao().updateTask(TaskDb(taskItem.taskText, taskItem.isDone, taskItem.taskType, taskItem.category?.categoryId, taskItem.doneDate, taskItem.id!!))
+        database.taskDao().updateTask(
+            TaskDb(
+                taskItem.taskText,
+                taskItem.isDone,
+                taskItem.taskType,
+                taskItem.category?.categoryId,
+                taskItem.doneDate,
+                taskItem.id!!
+            )
+        )
     }
 
 
-    suspend fun syncDatabase(): Boolean  {
-        val result: TaskRequest =
-        try{
+    suspend fun syncDatabase(): Boolean {
+        val result: TaskRequest = try {
             outerRepo.getTasks()
         } catch (e: HttpException) {
             Log.v("SYNC_ERROR", e.message())
@@ -140,29 +156,27 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun getCategoryDetails(id: Long): TaskCategory? {
-        val result =
-            try {
-                database.taskCategoryDao().getCategoryById(id)
-            } catch (e: Exception) {
-                return null
-            }
+        val result = try {
+            database.taskCategoryDao().getCategoryById(id)
+        } catch (e: Exception) {
+            return null
+        }
         return TaskCategory(result.id, result.name, result.tagColor)
     }
 
     suspend fun saveCategory(taskCategory: TaskCategory) {
-        if (taskCategory.categoryId == null || database.taskCategoryDao().getCategoryById(taskCategory.categoryId) == null) {
+        if (taskCategory.categoryId == null || database.taskCategoryDao()
+                .getCategoryById(taskCategory.categoryId) == null
+        ) {
             database.taskCategoryDao().insertCategory(
                 CategoryDb(
-                    taskCategory.categoryName,
-                    taskCategory.tagColor
+                    taskCategory.categoryName, taskCategory.tagColor
                 )
             )
-        } else{
+        } else {
             database.taskCategoryDao().updateCategory(
                 CategoryDb(
-                    taskCategory.categoryName,
-                    taskCategory.tagColor,
-                    taskCategory.categoryId
+                    taskCategory.categoryName, taskCategory.tagColor, taskCategory.categoryId
                 )
             )
         }
@@ -173,7 +187,7 @@ class TaskRepository @Inject constructor(
         if (cat == null) {
             return
         }
-        database.taskDao().getTasksOfCategory(id).tasks.map{
+        database.taskDao().getTasksOfCategory(id).tasks.map {
             database.taskDao().deleteTask(it)
         }
         database.taskCategoryDao().deleteCategoryById(cat)

@@ -23,24 +23,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.layka.planner.R
 import com.layka.planner.ViewModels.TaskEditViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewModel: TaskEditViewModel = hiltViewModel()) {
+fun TaskEditScreen(
+    navController: NavController,
+    id: Long? = null,
+    taskViewModel: TaskEditViewModel = hiltViewModel()
+) {
 
     val context = LocalContext.current // контекст для тоста
 
-    val showToast = fun (text: String) {
+    val showToast = fun(text: String) {
         Toast.makeText(
-            context,
-            text,
-            Toast.LENGTH_SHORT
+            context, text, Toast.LENGTH_SHORT
         ).show()
     }
 
@@ -50,14 +54,14 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
     val taskText = remember { mutableStateOf("") }
     val selectedType = remember { mutableStateOf(TaskType.DEFAULT) }
     val selectedCategory = remember { mutableStateOf<Long?>(null) }
-    val updateData = fun (t: TaskItem){ // обновление данных полсле получения из бд
+    val updateData = fun(t: TaskItem) { // обновление данных полсле получения из бд
         taskText.value = t.taskText
         selectedType.value = t.taskType
         selectedCategory.value = t.category?.categoryId
     }
 
     if (!gotData.value) { // получение данных из бд должно произойти только 1 раз
-           taskViewModel.getTaskInfo(id, updateData)
+        taskViewModel.getTaskInfo(id, updateData)
         gotData.value = true
     }
 
@@ -72,22 +76,23 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
 
 
     val taskTypes = TaskType.entries.toMutableList()
-    val typeMenuIcon = if (typeMenuExpanded.value)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-    val categoryMenuIcon = if (categoryMenuExpanded.value)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
+    val typeMenuIcon = if (typeMenuExpanded.value) Icons.Filled.KeyboardArrowUp
+    else Icons.Filled.KeyboardArrowDown
+    val categoryMenuIcon = if (categoryMenuExpanded.value) Icons.Filled.KeyboardArrowUp
+    else Icons.Filled.KeyboardArrowDown
 
-    Scaffold(
-        topBar = { TopAppBar(title = { Text(text = if (id != null) "Edit Task" else "Create task")}) }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        TopAppBar(title = {
+            Text(
+                text = if (id != null) stringResource(id = R.string.edit) + stringResource(
+                    id = R.string.task
+                ) else stringResource(id = R.string.create) + stringResource(id = R.string.task)
+            )
+        })
+    }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             TextField( // текст задачи
-                value = taskText.value,
-                onValueChange = {
+                value = taskText.value, onValueChange = {
                     taskText.value = it
                 },
                 Modifier
@@ -102,29 +107,23 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                 onExpandedChange = { typeMenuExpanded.value = !typeMenuExpanded.value },
                 modifier = Modifier.padding(10.dp)
             ) {
-                OutlinedTextField(
-                    value = taskTypes[selectedType.value.ordinal].name,
+                OutlinedTextField(value = taskTypes[selectedType.value.ordinal].name,
                     onValueChange = {},
                     readOnly = true,
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(),
-                    label = { Text("Type") },
+                    label = { Text(stringResource(id = R.string.type)) },
                     trailingIcon = {
                         Icon(typeMenuIcon, "open types")
-                    }
-                )
-                ExposedDropdownMenu(
-                    expanded = typeMenuExpanded.value,
-                    onDismissRequest = { typeMenuExpanded.value = false }
-                ) {
+                    })
+                ExposedDropdownMenu(expanded = typeMenuExpanded.value,
+                    onDismissRequest = { typeMenuExpanded.value = false }) {
                     taskTypes.forEach { ttype ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedType.value = ttype
-                                typeMenuExpanded.value = false
-                            },
-                            text = { Text(text = ttype.name) })
+                        DropdownMenuItem(onClick = {
+                            selectedType.value = ttype
+                            typeMenuExpanded.value = false
+                        }, text = { Text(text = ttype.name) })
                     }
                 }
             }
@@ -135,65 +134,72 @@ fun TaskEditScreen(navController: NavController, id: Long? = null,  taskViewMode
                 onExpandedChange = { categoryMenuExpanded.value = !categoryMenuExpanded.value },
                 modifier = Modifier.padding(10.dp)
             ) {
-                OutlinedTextField(
-                    value = taskViewModel.categoryItems.value[selectedCategory.value] ?: "no category",
+                OutlinedTextField(value = taskViewModel.categoryItems.value[selectedCategory.value]
+                    ?: stringResource(
+                        id = R.string.no_category
+                    ),
                     onValueChange = {},
                     readOnly = true,
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(),
-                    label = { Text("Category") },
+                    label = { Text(stringResource(id = R.string.category)) },
                     trailingIcon = {
                         Icon(categoryMenuIcon, "open categories")
-                    }
-                )
-                ExposedDropdownMenu(
-                    expanded = categoryMenuExpanded.value,
-                    onDismissRequest = { categoryMenuExpanded.value = false }
-                ) {
+                    })
+                ExposedDropdownMenu(expanded = categoryMenuExpanded.value,
+                    onDismissRequest = { categoryMenuExpanded.value = false }) {
                     taskViewModel.categoryItems.value.forEach { cat ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedCategory.value = cat.key
-                                categoryMenuExpanded.value = false
-                            },
-                            text = { Text(text = cat.value) })
+                        DropdownMenuItem(onClick = {
+                            selectedCategory.value = cat.key
+                            categoryMenuExpanded.value = false
+                        }, text = { Text(text = cat.value) })
                     }
                 }
             }
 
             Row {
+                val toastText =
+                    stringResource(id = R.string.task) + stringResource(id = R.string.is_blank)
+
                 Button(
                     onClick = { // кнопка сохранения задачи
-                    val result = taskViewModel.saveTask(
-                        TaskItem(
-                            id,
-                            taskText = taskText.value,
-                            taskType = selectedType.value,
-                        ),
-                        selectedCategory.value
-                    )
-                    if (result) {
-                        navController.popBackStack()
-                    } else {
-                        showToast("task is empty")
-                    }
-                },
-                    Modifier.padding(10.dp).weight(1f)
+                        val result = taskViewModel.saveTask(
+                            TaskItem(
+                                id,
+                                taskText = taskText.value,
+                                taskType = selectedType.value,
+                            ), selectedCategory.value
+                        )
+                        if (result) {
+                            navController.popBackStack()
+                        } else {
+                            showToast(toastText)
+                        }
+                    },
+                    Modifier
+                        .padding(10.dp)
+                        .weight(1f)
                 ) {
-                    Text(text = "Save")
+                    Text(text = stringResource(id = R.string.save))
                 }
 
                 if (id != null) { // если это существующая заадача добавляем кнопку удаления
-                    Button(onClick = {
-                        if (taskViewModel.deleteTask(id)) {
-                            navController.popBackStack()
-                        } else {
-                            showToast("no such task")
-                        }
-                    },
-                        Modifier.padding(10.dp).weight(1f)) {
-                        Text(text = "Delete")
+                    val deleteToastText =
+                        stringResource(id = R.string.task) + stringResource(id = R.string.does_not_exist)
+                    Button(
+                        onClick = {
+                            if (taskViewModel.deleteTask(id)) {
+                                navController.popBackStack()
+                            } else {
+                                showToast(deleteToastText)
+                            }
+                        },
+                        Modifier
+                            .padding(10.dp)
+                            .weight(1f)
+                    ) {
+                        Text(text = stringResource(id = R.string.delete))
                     }
                 }
             }

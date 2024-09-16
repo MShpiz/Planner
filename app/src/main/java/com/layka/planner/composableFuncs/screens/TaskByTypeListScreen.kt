@@ -41,52 +41,52 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.layka.planner.composableFuncs.TaskList
 import com.layka.planner.R
 import com.layka.planner.ViewModels.MainScreenViewModel
+import com.layka.planner.composableFuncs.TaskList
 import com.layka.planner.data.TaskType
 import kotlinx.coroutines.launch
 
 @Composable
-fun CategoryDrawerLabel(it: Map.Entry<Long?, String>, navController: NavController, viewModel: MainScreenViewModel) {
+fun CategoryDrawerLabel(
+    it: Map.Entry<Long?, String>,
+    navController: NavController,
+    viewModel: MainScreenViewModel
+) {
     val expanded = remember { mutableStateOf(false) }
     val isNotDeleted = remember {
         mutableStateOf(true)
     }
 
-    if (isNotDeleted.value)
-        Row(Modifier.fillMaxWidth()){
-            Text(text = it.value,
-                Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically))
-            Box() {
-                IconButton(
-                    onClick = { expanded.value = true }
-                ) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "show menu")
-                }
-                DropdownMenu(
-                    expanded = expanded.value,
-                    onDismissRequest = { expanded.value = false },
-                    Modifier.align(Alignment.CenterEnd)
-                ) {
-                    Text("Edit",
-                        modifier = Modifier
-                            .clickable { navController.navigate("edit_category/${it.key}") }
-                            .padding(vertical = 5.dp, horizontal = 10.dp)
-                    )
-                    Text("Delete",
-                        modifier = Modifier
-                            .clickable {
-                                isNotDeleted.value = false
-                                viewModel.deleteCategory(it.key)
-                            }
-                            .padding(vertical = 5.dp, horizontal = 10.dp)
-                    )
-                }
+    if (isNotDeleted.value) Row(Modifier.fillMaxWidth()) {
+        Text(
+            text = it.value,
+            Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+        Box {
+            IconButton(onClick = { expanded.value = true }) {
+                Icon(Icons.Default.MoreVert, contentDescription = "show menu")
+            }
+            DropdownMenu(
+                expanded = expanded.value,
+                onDismissRequest = { expanded.value = false },
+                Modifier.align(Alignment.CenterEnd)
+            ) {
+                Text(stringResource(id = R.string.edit),
+                    modifier = Modifier
+                        .clickable { navController.navigate("edit_category/${it.key}") }
+                        .padding(vertical = 5.dp, horizontal = 10.dp))
+                Text(stringResource(id = R.string.delete), modifier = Modifier
+                    .clickable {
+                        isNotDeleted.value = false
+                        viewModel.deleteCategory(it.key)
+                    }
+                    .padding(vertical = 5.dp, horizontal = 10.dp))
             }
         }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,25 +97,24 @@ fun TaskByTypeListScreen(
     viewModel: MainScreenViewModel = hiltViewModel(),
     catId: Long? = null
 ) {
-    val screenTitle: String =
-        if (type != null && type < TaskType.entries.size) {
-            when(TaskType.entries[type]) {
-                TaskType.DAILY -> stringResource(id = R.string.daily_tag_text)
-                TaskType.WEEKLY -> stringResource(id = R.string.daily_tag_text)
-                TaskType.DEFAULT -> "Non-repeating"
-            }
-        } else if (catId != null && catId < viewModel.categoryItems.value.size){
-                viewModel.categoryItems.value[catId]!!
-        } else {
-            "All tasks"
+    val screenTitle: String = if (type != null && type < TaskType.entries.size) {
+        when (TaskType.entries[type]) {
+            TaskType.DAILY -> stringResource(id = R.string.daily_tag_text)
+            TaskType.WEEKLY -> stringResource(id = R.string.daily_tag_text)
+            TaskType.DEFAULT -> stringResource(id = R.string.non_repeating)
         }
+    } else if (catId != null && catId < viewModel.categoryItems.value.size) {
+        viewModel.categoryItems.value[catId]!!
+    } else {
+        stringResource(id = R.string.all_tasks)
+    }
 
 
-    val progress = remember{
+    val progress = remember {
         mutableFloatStateOf(0.0f)
     }
 
-    val updateProgress = fun (newValue: Float){
+    val updateProgress = fun(newValue: Float) {
         progress.floatValue = newValue
     }
 
@@ -128,16 +127,16 @@ fun TaskByTypeListScreen(
             ModalDrawerSheet {
                 Column {
                     NavigationDrawerItem(
-                        label = {Text("All Tasks")},
+                        label = { Text(stringResource(id = R.string.all_tasks)) },
                         selected = false,
                         onClick = {
                             scope.launch { drawerState.close() }
                             navController.navigate("main_screen")
-                                  },
+                        },
                     )
                     for (i in TaskType.entries) {
                         NavigationDrawerItem(
-                            label = {Text(i.name)},
+                            label = { Text(i.name) },
                             selected = false,
                             onClick = {
                                 scope.launch { drawerState.close() }
@@ -147,69 +146,74 @@ fun TaskByTypeListScreen(
                     }
                     HorizontalDivider()
 
-                    viewModel.categoryItems.value.forEach{
-                        NavigationDrawerItem(
-                            label = { CategoryDrawerLabel(it, navController, viewModel)},
+                    viewModel.categoryItems.value.forEach {
+                        NavigationDrawerItem(label = {
+                            CategoryDrawerLabel(
+                                it,
+                                navController,
+                                viewModel
+                            )
+                        },
                             selected = false,
                             onClick = {
                                 navController.navigate("/category/${it.key}")
-                            }
-                        )
+                            })
                     }
 
-                    NavigationDrawerItem(
-                        label = {Text("create category")},
+                    NavigationDrawerItem(label = { Text(stringResource(id = R.string.create_category)) },
                         selected = false,
                         onClick = {
                             scope.launch { drawerState.close() }
                             navController.navigate("create_category")
                         },
-                        icon = {Icon(Icons.Default.Add, contentDescription = "create category")}
-                    )
+                        icon = {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = stringResource(id = R.string.create_category)
+                            )
+                        })
 
                 }
             }
         },
     ) {
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { navController.navigate("create_note") },
-                ) {
-                    Icon(Icons.Filled.Add, "Add task")
-                }
-            },
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    title = {
-                        Text(screenTitle)
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { if (drawerState.isClosed) scope.launch { drawerState.open()} else scope.launch { drawerState.close()} }) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = "menu"
-                            )
-
-                        }
-                    },
-                )
+        Scaffold(floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("create_note") },
+            ) {
+                Icon(Icons.Filled.Add, "Add task")
             }
-        )
-        { innerPadding ->
+        }, topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(screenTitle)
+                },
+                navigationIcon = {
+                    IconButton(onClick = { if (drawerState.isClosed) scope.launch { drawerState.open() } else scope.launch { drawerState.close() } }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu, contentDescription = "menu"
+                        )
+
+                    }
+                },
+            )
+        }) { innerPadding ->
             Column(Modifier.padding(innerPadding)) {
                 if (type != null) {
                     Column {
-                        //Text(text = "${TaskType.entries[type].name} tasks completion")
                         LinearProgressIndicator(
                             progress = { progress.floatValue },
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp, horizontal = 5.dp).clip(
-                                RoundedCornerShape(10.dp)
-                            ).height(20.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 3.dp, horizontal = 5.dp)
+                                .clip(
+                                    RoundedCornerShape(10.dp)
+                                )
+                                .height(20.dp),
                         )
                     }
                     TaskList(
@@ -219,9 +223,8 @@ fun TaskByTypeListScreen(
                     )
                 } else if (catId != null) {
                     TaskList(
-                        navController = navController,
-                        catId = catId
-                        )
+                        navController = navController, catId = catId
+                    )
                 } else {
                     TaskList(navController = navController)
                 }

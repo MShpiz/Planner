@@ -27,21 +27,28 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.layka.planner.composableFuncs.ColorPickerPanel
 import com.layka.planner.R
 import com.layka.planner.ViewModels.EditCategoryViewModel
+import com.layka.planner.composableFuncs.ColorPickerPanel
 import com.layka.planner.data.TaskCategory
 
 
+private const val s = "Create Category"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel: EditCategoryViewModel = hiltViewModel()) {
+fun CategoryEditScreen(
+    navController: NavController,
+    id: Long? = null,
+    viewModel: EditCategoryViewModel = hiltViewModel()
+) {
     val context = LocalContext.current // контекст для тоста
 
-    val showToast = fun (text: String) {
+    val showToast = fun(text: String) {
         Toast.makeText(
             context,
             text,
@@ -66,11 +73,11 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
 
     if (!gotData.value) {
         viewModel.getCategory(id,
-            fun (cat: TaskCategory){
+            fun(cat: TaskCategory) {
                 categoryName.value = cat.categoryName
                 tagColor.value = cat.tagColor
                 gotData.value = true
-        })
+            })
     }
 
     val currentColorField = remember {
@@ -81,58 +88,85 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
         mutableStateOf(false)
     }
 
-    val closeColorPicker = fun (){
+    val closeColorPicker = fun() {
         isColorPickerOpen.value = false
         currentColorField.value = null
     }
 
-    val openColorPicker = fun (field: Int){
+    val openColorPicker = fun(field: Int) {
         isColorPickerOpen.value = true
         currentColorField.value = field
     }
 
+    val toastString =
+        stringResource(id = R.string.category) + stringResource(id = R.string.is_blank)
+
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = if (id != null) "Edit Category" else "Create Category")}) },
+        topBar = {
+            TopAppBar(title = {
+                Text(
+                    text = if (id != null) stringResource(id = R.string.edit_category) else stringResource(
+                        id = R.string.create_category
+                    )
+                )
+            })
+        },
         modifier = Modifier.fillMaxSize()
-    ){ innerPadding ->
+    ) { innerPadding ->
         Box(
             Modifier
                 .padding(innerPadding)
-                .fillMaxSize()) {
+                .fillMaxSize()
+        ) {
             Column(
                 Modifier
                     .fillMaxSize()
                     .blur(if (isColorPickerOpen.value) 10.dp else 0.dp)
             ) {
-                TextField(value = categoryName.value, onValueChange = { categoryName.value = it },  Modifier
-                    .padding(horizontal = 10.dp)
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth())
+                TextField(
+                    value = categoryName.value, onValueChange = { categoryName.value = it },
+                    Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(bottom = 10.dp)
+                        .fillMaxWidth()
+                )
 
-                ColorField("tag color: ", 1, tagColor, openColorPicker)
+                ColorField(stringResource(id = R.string.tag_color), 1, tagColor, openColorPicker)
 
-                Row( Modifier
-                    .padding(horizontal = 10.dp)
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth()) {
-                    Button(onClick = {
-                        val res = viewModel.save(TaskCategory(id, categoryName.value, tagColor.value))
-                        if (res)
-                            navController.popBackStack()
-                        else
-                            showToast("category name is blank")
-                    },
-                        Modifier.padding(10.dp).weight(1f)) {
-                        Text(text = "Save")
+                Row(
+                    Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(bottom = 10.dp)
+                        .fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            val res =
+                                viewModel.save(TaskCategory(id, categoryName.value, tagColor.value))
+                            if (res)
+                                navController.popBackStack()
+                            else
+                                showToast(toastString)
+                        },
+                        Modifier
+                            .padding(10.dp)
+                            .weight(1f)
+                    ) {
+                        Text(text = stringResource(id = R.string.save))
                     }
                     if (id != null) {
 
 
-                        Button(onClick = {
-                            viewModel.delete(id)
-                            navController.popBackStack()
-                            },Modifier.padding(10.dp).weight(1f)) {
-                            Text(text = "Delete")
+                        Button(
+                            onClick = {
+                                viewModel.delete(id)
+                                navController.popBackStack()
+                            },
+                            Modifier
+                                .padding(10.dp)
+                                .weight(1f)
+                        ) {
+                            Text(text = stringResource(id = R.string.delete))
                         }
                     }
                 }
@@ -152,11 +186,11 @@ fun CategoryEditScreen(navController: NavController, id: Long? = null, viewModel
                     }))
 
             if (isColorPickerOpen.value) {
-                val initialColor = when(currentColorField.value) {
+                val initialColor = when (currentColorField.value) {
                     1 -> tagColor
                     2 -> catBackgroundColor
-                    else ->  remember {
-                        mutableStateOf( Color.White)
+                    else -> remember {
+                        mutableStateOf(Color.White)
                     }
                 }
                 ColorPickerPanel(
@@ -176,14 +210,18 @@ fun ColorField(
     currentColor: MutableState<Color>,
     changeColor: (Int) -> Unit,
 ) {
-    Row( Modifier
-        .padding(horizontal = 10.dp)
-        .padding(bottom = 10.dp)
-        .fillMaxWidth()) {
-        Text(fieldName,
+    Row(
+        Modifier
+            .padding(horizontal = 10.dp)
+            .padding(bottom = 10.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            fieldName,
             Modifier
                 .align(Alignment.CenterVertically)
-                .padding(end = 5.dp))
+                .padding(end = 5.dp)
+        )
         Button(
             onClick = { changeColor(filedNumber) },
             colors = ButtonDefaults.buttonColors(containerColor = currentColor.value),

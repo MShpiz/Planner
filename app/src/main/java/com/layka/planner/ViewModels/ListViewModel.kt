@@ -17,19 +17,19 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ListViewModel @Inject constructor (private val repository: TaskRepository): ViewModel() {
+class ListViewModel @Inject constructor(private val repository: TaskRepository) : ViewModel() {
     val tasks = mutableStateOf(listOf<TaskItem>())
 
-    val unCheck = fun (item: TaskItem):TaskItem {
+    val unCheck = fun(item: TaskItem): TaskItem {
 
         Log.v("GET_TASKS", "${item} ${LocalDate.now()}")
 
-        if (item.taskType == TaskType.DAILY && item.doneDate != null && item.doneDate != LocalDate.now()){
+        if (item.taskType == TaskType.DAILY && item.doneDate != null && item.doneDate != LocalDate.now()) {
             item.doneDate = null
             item.isDone = false
             updateTask(item)
         } else if (item.taskType == TaskType.WEEKLY && item.doneDate != null) {
-            val weekField =  WeekFields.of(Locale.getDefault())
+            val weekField = WeekFields.of(Locale.getDefault())
             val weekNumber = item.doneDate!!.get(weekField.weekOfYear())
             val currWeekNumber = LocalDate.now().get(weekField.weekOfYear())
             if (weekNumber != currWeekNumber) {
@@ -43,20 +43,20 @@ class ListViewModel @Inject constructor (private val repository: TaskRepository)
 
     fun getTasks(type: TaskType? = null, catId: Long? = null) {
         viewModelScope.launch {
-            tasks.value =
-           if (type != null){
-               repository.getAllTasksByType(type).map { unCheck(it) }.sortedBy { it.isDone }
-           } else if (catId != null) {
-               val category: TaskCategory? = repository.getCategoryDetails(catId)
-               if (category != null){
-                   repository.getAllTasksByCategory(category).map { unCheck(it) }.sortedBy { it.isDone }
-               } else {
-                   listOf()
-               }
+            tasks.value = if (type != null) {
+                repository.getAllTasksByType(type).map { unCheck(it) }.sortedBy { it.isDone }
+            } else if (catId != null) {
+                val category: TaskCategory? = repository.getCategoryDetails(catId)
+                if (category != null) {
+                    repository.getAllTasksByCategory(category).map { unCheck(it) }
+                        .sortedBy { it.isDone }
+                } else {
+                    listOf()
+                }
             } else {
-               repository.getAllTasks().map { unCheck(it) }.sortedBy { it.isDone }
-           }
-           Log.v("GET_TASKS", tasks.value.size.toString())
+                repository.getAllTasks().map { unCheck(it) }.sortedBy { it.isDone }
+            }
+            Log.v("GET_TASKS", tasks.value.size.toString())
         }
 
     }
@@ -73,12 +73,12 @@ class ListViewModel @Inject constructor (private val repository: TaskRepository)
                 repository.syncDatabase()
                 getTasks()
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.v("SYNC_ERROR", e.message.toString())
         }
     }
 
     fun getTaskProgress(taskProgressCallback: (Float) -> Unit) {
-        taskProgressCallback((tasks.value.count { it.isDone }.toFloat()/tasks.value.size))
+        taskProgressCallback((tasks.value.count { it.isDone }.toFloat() / tasks.value.size))
     }
 }

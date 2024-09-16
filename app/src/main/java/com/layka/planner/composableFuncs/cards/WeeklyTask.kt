@@ -7,8 +7,8 @@ import com.layka.planner.R
 import com.layka.planner.data.TaskItem
 
 @Composable
-fun WeeklyCard(task: TaskItem, updateChecked: ()->Unit) {
-    val tags = if (task.category != null){
+fun WeeklyCard(task: TaskItem, updateChecked: () -> Unit) {
+    val tags = if (task.category != null) {
         mutableListOf(Pair(task.category!!.categoryName, task.category!!.tagColor))
     } else {
         mutableListOf()
@@ -23,15 +23,3 @@ fun WeeklyCard(task: TaskItem, updateChecked: ()->Unit) {
         doneDate = task.doneDate
     )
 }
-
-//@Composable
-//@Preview
-//fun WeeklyCardPreview() {
-//    Column {
-//        WeeklyCard(
-//            TaskItem(null, "AAAAAAAAAA"),
-//            taskViewModel
-//        )
-//        WeeklyCard(TaskItem(null, "Text", isDone = true), taskViewModel)
-//    }
-//}

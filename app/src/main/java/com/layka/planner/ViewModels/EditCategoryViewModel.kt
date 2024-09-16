@@ -10,18 +10,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EditCategoryViewModel @Inject constructor(private val repository: TaskRepository): ViewModel() {
+class EditCategoryViewModel @Inject constructor(private val repository: TaskRepository) :
+    ViewModel() {
     fun getCategory(id: Long?, updateData: (TaskCategory) -> Unit) {
         viewModelScope.launch {
             var res = TaskCategory(null, "")
-            if (id != null)
-                res = repository.getCategoryDetails(id) ?: res
+            if (id != null) res = repository.getCategoryDetails(id) ?: res
             updateData(res)
         }
     }
 
     fun save(taskCategory: TaskCategory): Boolean {
-        if (taskCategory.categoryName.isBlank()){
+        if (taskCategory.categoryName.isBlank()) {
             return false
         }
         viewModelScope.launch {

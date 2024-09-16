@@ -23,15 +23,3 @@ fun DailyCard(task: TaskItem, updateChecked: ()->Unit) {
         doneDate = task.doneDate
     )
 }
-
-//@Composable
-//@Preview
-//fun DalyCardPreview() {
-//    Column {
-//        DailyCard(
-//            TaskItem(null, "AAAAAAAAAA"),
-//            taskViewModel
-//        )
-//        DailyCard(TaskItem(null, "Text", isDone = true), taskViewModel)
-//    }
-//}

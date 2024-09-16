@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.godaddy.android.colorpicker.ClassicColorPicker
@@ -30,7 +31,7 @@ import com.layka.planner.R
 
 
 @Composable
-fun ColorPickerPanel(initialColor: MutableState<Color>, onClose: ()->Unit) {
+fun ColorPickerPanel(initialColor: MutableState<Color>, onClose: () -> Unit) {
     val currColor = remember {
         initialColor
     }
@@ -50,10 +51,15 @@ fun ColorPickerPanel(initialColor: MutableState<Color>, onClose: ()->Unit) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)) {
+                    .padding(horizontal = 10.dp)
+            ) {
 
-                Text(text = "Color picked:", Modifier.align(Alignment.CenterVertically))
-                Text(text = "",
+                Text(
+                    text = stringResource(id = R.string.color_picked),
+                    Modifier.align(Alignment.CenterVertically)
+                )
+                Text(
+                    text = "",
                     Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
@@ -69,7 +75,7 @@ fun ColorPickerPanel(initialColor: MutableState<Color>, onClose: ()->Unit) {
                         .padding(start = 30.dp, end = 30.dp, top = 10.dp)
                 )
                 Button(onClick = { onClose() }, Modifier) {
-                    Text("Close")
+                    Text(stringResource(id = R.string.close))
                 }
             }
 
@@ -95,5 +101,5 @@ fun ColorPickerPanel(initialColor: MutableState<Color>, onClose: ()->Unit) {
 fun ColorPickerPanelPreview() {
     ColorPickerPanel(initialColor = remember {
         mutableStateOf(Color.White)
-    }, onClose = fun(){})
+    }, onClose = fun() {})
 }

@@ -4,4 +4,22 @@
     <string name="weekly_tag_text">Weekly</string>
     <string name="no_tasks">Create a task to fill the space</string>
     <string name="sync">Sync</string>
+    <string name="edit_category">Edit category</string>
+    <string name="create_category">Create category</string>
+    <string name="tag_color">tag color: </string>
+    <string name="category">Category</string>
+    <string name="task">Task</string>
+    <string name="is_blank"> is blank</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="non_repeating">Non-repeating</string>
+    <string name="all_tasks">All tasks</string>
+    <string name="does_not_exist">doesn`t exist</string>
+    <string name="no_category">no category</string>
+    <string name="type">Type</string>
+    <string name="create">Create</string>
+    <string name="color">Color</string>
+    <string name="color_picked">Color picked: </string>
+    <string name="close">close</string>
 </resources>

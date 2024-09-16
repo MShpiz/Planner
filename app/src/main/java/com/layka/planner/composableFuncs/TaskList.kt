@@ -1,6 +1,5 @@
 package com.layka.planner.composableFuncs
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,17 +17,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.layka.planner.R
+import com.layka.planner.ViewModels.ListViewModel
 import com.layka.planner.composableFuncs.cards.DailyCard
 import com.layka.planner.composableFuncs.cards.PlainCard
 import com.layka.planner.composableFuncs.cards.WeeklyCard
-import com.layka.planner.R
-import com.layka.planner.ViewModels.ListViewModel
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 import java.time.LocalDate
 
 @Composable
-fun  TaskList(
+fun TaskList(
     navController: NavController,
     taskProgressCallback: ((Float) -> Unit)? = null,
     type: TaskType? = null,
@@ -39,11 +38,11 @@ fun  TaskList(
     val painter = painterResource(id = R.drawable.plus)
 
     taskViewModel.getTasks(type, catId)
-    if (taskProgressCallback != null){
+    if (taskProgressCallback != null) {
         taskViewModel.getTaskProgress(taskProgressCallback)
     }
 
-    Column(modifier = Modifier.fillMaxSize()){
+    Column(modifier = Modifier.fillMaxSize()) {
         if (type == null && catId == null && !onlyUncategorized) {
             Button(onClick = {
                 taskViewModel.sync()
@@ -53,9 +52,11 @@ fun  TaskList(
         }
 
         if (taskViewModel.tasks.value.isEmpty()) {
-            Column( horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
                 Image(painter, "no tasks")
                 Text(text = stringResource(id = R.string.no_tasks))
             }
@@ -68,20 +69,21 @@ fun  TaskList(
                 itemsIndexed(taskViewModel.tasks.value) { index: Int, it: TaskItem ->
                     Box(
                         modifier = Modifier.clickable {
-                            Log.v("ClickTrack", "clicked box of item ${it.id}")
+                            //Log.v("ClickTrack", "clicked box of item ${it.id}")
                             navController.navigate("edit_task/${it.id}")
                         }
                     ) {
                         val updateChecked = fun() {
-                            Log.v("ClickTrack", "${it.id} ${taskViewModel.tasks.value[index].isDone} ${it.taskText}")
-                            taskViewModel.tasks.value[index].isDone = !taskViewModel.tasks.value[index].isDone
+                            //Log.v("ClickTrack", "${it.id} ${taskViewModel.tasks.value[index].isDone} ${it.taskText}")
+                            taskViewModel.tasks.value[index].isDone =
+                                !taskViewModel.tasks.value[index].isDone
 
                             if (taskViewModel.tasks.value[index].isDone)
                                 taskViewModel.tasks.value[index].doneDate = LocalDate.now()
                             else
                                 taskViewModel.tasks.value[index].doneDate = null
 
-                            Log.v("ClickTrack", taskViewModel.tasks.value[index].doneDate.toString())
+                            //Log.v("ClickTrack", taskViewModel.tasks.value[index].doneDate.toString())
                             taskViewModel.updateTask(taskViewModel.tasks.value[index])
                             if (taskProgressCallback != null)
                                 taskViewModel.getTaskProgress(taskProgressCallback)

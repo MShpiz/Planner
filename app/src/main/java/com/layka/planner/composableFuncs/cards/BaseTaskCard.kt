@@ -57,7 +57,7 @@ fun BaseCard(
 
             Checkbox(checked = isDone.value, onCheckedChange = { newDone ->
                 isDone.value = newDone
-                Log.v("ClickTrack", "clicked the checkBox ${isDone.value}")
+                //Log.v("ClickTrack", "clicked the checkBox ${isDone.value}")
                 updateChecked()
             })
 

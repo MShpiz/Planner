@@ -9,7 +9,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainScreenViewModel @Inject constructor(private val repository: TaskRepository): ViewModel() {
+class MainScreenViewModel @Inject constructor(private val repository: TaskRepository) :
+    ViewModel() {
     fun deleteCategory(id: Long?) {
         if (id == null) return
         viewModelScope.launch {
