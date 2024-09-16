@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.time.LocalDate
@@ -110,9 +111,15 @@ fun getTextColor(color: Color): Color{
 @Composable
 fun Tag(text:String, color: Color) {
     val textColor = getTextColor(color)
+    val finalText = if (text.length > 7) {
+        text.substring(0..6)+"..."
+    } else{
+        text
+    }
     Text( // tag
-        text = text,
+        text = finalText,
         style = TextStyle(color=textColor),
+        overflow = TextOverflow.Ellipsis,
         modifier = Modifier
             .padding(2.dp)
             .clip(RoundedCornerShape(100.dp))
