@@ -22,4 +22,7 @@
     <string name="color">Color</string>
     <string name="color_picked">Color picked: </string>
     <string name="close">close</string>
+    <string name="repeats">Repeats: </string>
+    <string name="never">never</string>
+    <string name="done">Done: </string>
 </resources>
