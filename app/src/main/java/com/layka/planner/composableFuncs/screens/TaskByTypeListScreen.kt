@@ -100,7 +100,7 @@ fun TaskByTypeListScreen(
     val screenTitle: String = if (type != null && type < TaskType.entries.size) {
         when (TaskType.entries[type]) {
             TaskType.DAILY -> stringResource(id = R.string.daily_tag_text)
-            TaskType.WEEKLY -> stringResource(id = R.string.daily_tag_text)
+            TaskType.WEEKLY -> stringResource(id = R.string.weekly_tag_text)
             TaskType.DEFAULT -> stringResource(id = R.string.non_repeating)
         }
     } else if (catId != null && catId < viewModel.categoryItems.value.size) {
