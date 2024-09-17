@@ -5,6 +5,7 @@ import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
 import com.layka.planner.network.BackupApi
+import com.layka.planner.network.Response
 import com.layka.planner.network.TaskRequest
 import com.layka.planner.repository.entities.CategoryDb
 import com.layka.planner.repository.entities.TaskDb
@@ -120,37 +121,35 @@ class TaskRepository @Inject constructor(
     }
 
 
-    suspend fun syncDatabase(): Boolean {
-        val result: TaskRequest = try {
-            outerRepo.getTasks()
-        } catch (e: HttpException) {
-            Log.v("SYNC_ERROR", e.message())
-            return false
-        } catch (e: Exception) {
-            Log.v("SYNC_ERROR", e.message.toString())
-            return false
-        }
-
-        Log.v("SYNC_ERROR", result.tasks.isEmpty().toString())
-
+    suspend fun syncDatabase(): Response {
         val currentState = database.taskDao().getAll()
 
         if (currentState.isEmpty()) {
+            val result: TaskRequest
+            try {
+                result = outerRepo.getTasks()
+            } catch (e: HttpException) {
+                Log.v("SYNC_ERROR", e.message())
+                return Response.Failure("Server unavailable, could not load tasks")
+            } catch (e: Exception) {
+                Log.v("SYNC_ERROR", e.message.toString())
+                return Response.Failure("Unknown error, could not load tasks")
+            }
             insertTasks(result, currentState)
-            return true
+            return Response.Success("Loaded tasks from server")
         } else {
+
             try {
                 outerRepo.postTasks(TaskRequest(currentState))
             } catch (e: HttpException) {
                 Log.v("SYNC_ERROR", e.message())
-                return false
+                return Response.Failure("Server unavailable, could not upload tasks")
             } catch (e: Exception) {
                 Log.v("SYNC_ERROR", e.message.toString())
-                return false
+                return Response.Failure("Unknown error, could not upload tasks")
             }
+            return Response.Success("Uploaded tasks to server")
         }
-        return true
-
     }
 
     private fun insertTasks(result: TaskRequest, currentState: List<TaskDb>) {
