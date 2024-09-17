@@ -43,7 +43,7 @@ object PlannerModule {
     @Singleton
     fun provideNetworkRepo(): BackupApi {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.29:5000/")
+            .baseUrl("http://10.110.82.231:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(BackupApi::class.java)
     }

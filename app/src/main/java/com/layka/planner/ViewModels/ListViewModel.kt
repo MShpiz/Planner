@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.layka.planner.data.TaskCategory
 import com.layka.planner.data.TaskItem
 import com.layka.planner.data.TaskType
+import com.layka.planner.network.Response
 import com.layka.planner.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,6 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ListViewModel @Inject constructor(private val repository: TaskRepository) : ViewModel() {
     val tasks = mutableStateOf(listOf<TaskItem>())
+
+    val syncResult = mutableStateOf("")
 
     val unCheck = fun(item: TaskItem): TaskItem {
 
@@ -67,15 +70,31 @@ class ListViewModel @Inject constructor(private val repository: TaskRepository) 
         }
     }
 
-    fun sync() {
+    fun sync(printError: (String?)->Unit) {
+        var response: Response
+        syncResult.value = "Syncing"
         try {
             viewModelScope.launch {
-                repository.syncDatabase()
-                getTasks()
+                response = repository.syncDatabase()
+                when (response) {
+                    is Response.Failure -> {
+                        printError(response.message)
+                        syncResult.value = "Sync error: " + response.message
+                    }
+                    is Response.Success -> {
+                        getTasks()
+                        syncResult.value = response.message
+                    }
+                }
+
+
             }
         } catch (e: Exception) {
             Log.v("SYNC_ERROR", e.message.toString())
+            syncResult.value = "Unknown error"
+            return
         }
+
     }
 
     fun getTaskProgress(taskProgressCallback: (Float) -> Unit) {

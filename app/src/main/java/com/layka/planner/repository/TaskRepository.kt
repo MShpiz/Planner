@@ -10,6 +10,7 @@ import com.layka.planner.network.TaskRequest
 import com.layka.planner.repository.entities.CategoryDb
 import com.layka.planner.repository.entities.TaskDb
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -130,7 +131,10 @@ class TaskRepository @Inject constructor(
                 result = outerRepo.getTasks()
             } catch (e: HttpException) {
                 Log.v("SYNC_ERROR", e.message())
-                return Response.Failure("Server unavailable, could not load tasks")
+                return Response.Failure("Server error, could not load tasks")
+            } catch (e: SocketTimeoutException){
+                Log.v("SYNC_ERROR", e.message.toString())
+                return Response.Failure("Server unavailable, could not upload tasks")
             } catch (e: Exception) {
                 Log.v("SYNC_ERROR", e.message.toString())
                 return Response.Failure("Unknown error, could not load tasks")
@@ -143,9 +147,13 @@ class TaskRepository @Inject constructor(
                 outerRepo.postTasks(TaskRequest(currentState))
             } catch (e: HttpException) {
                 Log.v("SYNC_ERROR", e.message())
-                return Response.Failure("Server unavailable, could not upload tasks")
-            } catch (e: Exception) {
+                return Response.Failure("Server error, could not upload tasks")
+            } catch (e: SocketTimeoutException){
                 Log.v("SYNC_ERROR", e.message.toString())
+                return Response.Failure("Server unavailable, could not upload tasks")
+            }
+            catch (e: Exception) {
+                Log.v("SYNC_ERROR", "${e.javaClass} ${e.message.toString()}")
                 return Response.Failure("Unknown error, could not upload tasks")
             }
             return Response.Success("Uploaded tasks to server")

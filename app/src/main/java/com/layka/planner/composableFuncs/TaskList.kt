@@ -1,10 +1,12 @@
 package com.layka.planner.composableFuncs
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,15 @@ fun TaskList(
     catId: Long? = null,
     onlyUncategorized: Boolean = false
 ) {
+    val context = LocalContext.current // контекст для тоста
+
+    val showToast = fun(text: String?) {
+        Toast.makeText(
+            context,
+            text ?: "error",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
     val painter = painterResource(id = R.drawable.plus)
 
     taskViewModel.getTasks(type, catId)
@@ -46,11 +58,16 @@ fun TaskList(
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (type == null && catId == null && !onlyUncategorized) {
-            Button(onClick = {
-                taskViewModel.sync()
-            },
-                modifier = Modifier.align(Alignment.End).padding(end = 10.dp)) {
-                Text(stringResource(id = R.string.sync))
+            Row {
+                Text(taskViewModel.syncResult.value, Modifier.weight(1f))
+                Button(
+                    onClick = {
+                        taskViewModel.sync(showToast)
+                    },
+                    modifier = Modifier.padding(end = 10.dp)
+                ) {
+                    Text(stringResource(id = R.string.sync))
+                }
             }
         }
 
